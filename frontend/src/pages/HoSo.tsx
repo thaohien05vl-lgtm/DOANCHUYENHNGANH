@@ -1,6 +1,5 @@
-import { useMemo, useState, type ChangeEvent, type FormEvent } from 'react'
+import { useState, type ChangeEvent, type FormEvent } from 'react'
 import {
-  Cake,
   Camera,
   Check,
   Eye,
@@ -19,38 +18,13 @@ import {
 import { CameraModal } from '../components/chung/CameraModal'
 import { HopXacNhan } from '../components/chung/HopXacNhan'
 import { TieuDeTrang } from '../components/chung/TieuDeTrang'
+import { ZodiacCard } from '../components/zodiac/ZodiacCard'
 import { DANH_SACH_CHU_DE, type ThemeId } from '../data/chuDe'
 import { useGiaoDien } from '../hooks/useGiaoDien'
 import { useXacThuc } from '../hooks/useXacThuc'
 import { api } from '../services/api'
 import { nenAnh } from '../utils/anh'
 import { t } from '../utils/ngonNgu'
-
-function cungHoangDao(ngaySinh: string): { ten: string; bieuTuong: string; moTa: string } | null {
-  if (!ngaySinh) return null
-  const parts = ngaySinh.split('-')
-  if (parts.length < 3) return null
-  const thang = Number(parts[1])
-  const ngay = Number(parts[2])
-  const cacCung = [
-    { ten: t('Ma Kết'), bieuTuong: '♑', moTa: t('Kiên trì, thực tế và có trách nhiệm') },
-    { ten: t('Bảo Bình'), bieuTuong: '♒', moTa: t('Độc lập, sáng tạo và yêu tự do') },
-    { ten: t('Song Ngư'), bieuTuong: '♓', moTa: t('Tinh tế, giàu cảm xúc và trực giác') },
-    { ten: t('Bạch Dương'), bieuTuong: '♈', moTa: t('Nhiệt huyết, chủ động và quyết đoán') },
-    { ten: t('Kim Ngưu'), bieuTuong: '♉', moTa: t('Bền bỉ, ổn định và yêu sự thoải mái') },
-    { ten: t('Song Tử'), bieuTuong: '♊', moTa: t('Linh hoạt, tò mò và giao tiếp tốt') },
-    { ten: t('Cự Giải'), bieuTuong: '♋', moTa: t('Ấm áp, quan tâm và coi trọng gia đình') },
-    { ten: t('Sư Tử'), bieuTuong: '♌', moTa: t('Tự tin, hào phóng và giàu năng lượng') },
-    { ten: t('Xử Nữ'), bieuTuong: '♍', moTa: t('Tỉ mỉ, thực tế và chú trọng chi tiết') },
-    { ten: t('Thiên Bình'), bieuTuong: '♎', moTa: t('Hài hòa, tinh tế và yêu cái đẹp') },
-    { ten: t('Bọ Cạp'), bieuTuong: '♏', moTa: t('Sâu sắc, quyết tâm và giàu nội lực') },
-    { ten: t('Nhân Mã'), bieuTuong: '♐', moTa: t('Lạc quan, ham khám phá và thẳng thắn') },
-  ]
-  const mocChuyenCung = [20, 19, 21, 20, 21, 21, 23, 23, 23, 23, 22, 22]
-  if (thang < 1 || thang > 12 || !ngay) return null
-  const index = (thang - 1 + (ngay >= mocChuyenCung[thang - 1] ? 1 : 0)) % 12
-  return cacCung[index] ?? null
-}
 
 export function HoSo() {
   const { nguoiDung, capNhatHoSo, dangXuat } = useXacThuc()
@@ -77,7 +51,6 @@ export function HoSo() {
   // Hộp xác nhận đăng xuất
   const [hoiDangXuat, setHoiDangXuat] = useState(false)
 
-  const cung = useMemo(() => cungHoangDao(ngaySinh), [ngaySinh])
   const chuCai = (ten.trim().charAt(0) || nguoiDung?.ten.charAt(0) || 'F').toUpperCase()
 
   async function chonAnhTuTep(e: ChangeEvent<HTMLInputElement>) {
@@ -288,17 +261,8 @@ export function HoSo() {
             />
           </div>
 
-          {/* Thẻ Cung hoàng đạo nếu có ngày sinh */}
-          {cung && (
-            <div className="cung-hoang-dao" style={{ margin: 0 }}>
-              <span className="icon-tron">{cung.bieuTuong}</span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <b style={{ fontSize: '0.9rem' }}>{t('Cung {0}', [cung.ten])}</b>
-                <p className="nho mo" style={{ margin: 0 }}>{cung.moTa}</p>
-              </div>
-              <Cake size={18} style={{ color: 'var(--ngoc)', flexShrink: 0 }} />
-            </div>
-          )}
+          {/* Thẻ Cung hoàng đạo Celestial */}
+          <ZodiacCard ngaySinh={ngaySinh} />
 
           <div className="hs-chan-hang">
             <span className="nho mo" style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>

@@ -213,6 +213,14 @@ public class DuLieuService {
                     thongBaoService.kiemTraVaTaoCanhBaoNganSach(userId, cat, tongChiThang, b.getLimitAmount(), currentMonth);
                 }
             }
+
+            // Kiểm tra các mục tiêu tiết kiệm hoàn thành
+            for (GoalEntity g : goals.findAllByUserId(userId)) {
+                if (g.getTargetAmount() != null && g.getTargetAmount().compareTo(BigDecimal.ZERO) > 0
+                        && g.getSavedAmount() != null && g.getSavedAmount().compareTo(g.getTargetAmount()) >= 0) {
+                    thongBaoService.taoThongBaoMucTieu(userId, g.getId(), g.getName(), g.getTargetAmount(), g.getSavedAmount());
+                }
+            }
         }
 
         return layDuLieu(userId);

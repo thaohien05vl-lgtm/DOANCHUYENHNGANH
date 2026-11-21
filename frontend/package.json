@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "npx tsx test-bao-cao.ts && npx tsx test-chart-lifecycle.ts",
+    "test": "npx tsx test-bao-cao.ts && npx tsx test-in-bao-cao.ts && npx tsx test-chart-lifecycle.ts && npx tsx test-thong-bao.ts",
     "preview": "vite preview",
     "kiem-tra-dich": "node scripts/kiem-tra-ban-dich.mjs",
     "android": "npm run build && npx cap sync android"

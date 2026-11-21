@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { HopXacNhan } from '../components/chung/HopXacNhan'
 import { Modal } from '../components/chung/Modal'
+import { ZodiacCard } from '../components/zodiac/ZodiacCard'
 import { DANH_SACH_CHU_DE } from '../data/chuDe'
 import { useDuLieu } from '../hooks/useDuLieu'
 import { useGiaoDien } from '../hooks/useGiaoDien'
@@ -119,6 +120,11 @@ export function CaNhan() {
           {t('Sửa hồ sơ')}
         </Link>
       </div>
+
+      {/* THẺ CUNG HOÀNG ĐẠO THIÊN THỂ (NẾU ĐÃ CÓ NGÀY SINH) */}
+      {nguoiDung?.ngaySinh && (
+        <ZodiacCard ngaySinh={nguoiDung.ngaySinh} />
+      )}
 
       {/* ============================================================
           NHÓM 1: TÀI KHOẢN & THIẾT LẬP (THEO HÌNH 3)

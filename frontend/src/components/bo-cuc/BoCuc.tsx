@@ -110,6 +110,11 @@ export function BoCuc() {
                   key={m.den}
                   to={m.den}
                   end={m.den === '/'}
+                  onClick={() => {
+                    if (pathname === m.den && m.den === '/giao-dich') {
+                      window.dispatchEvent(new CustomEvent('finora:reset-giao-dich'))
+                    }
+                  }}
                   className={({ isActive }) => `muc-menu${isActive ? ' active' : ''}`}
                 >
                   <m.icon size={19} />
@@ -237,6 +242,11 @@ export function BoCuc() {
         {/* Tab 2: Giao dịch */}
         <NavLink
           to="/giao-dich"
+          onClick={() => {
+            if (pathname === '/giao-dich') {
+              window.dispatchEvent(new CustomEvent('finora:reset-giao-dich'))
+            }
+          }}
           className={({ isActive }) => `muc-duoi${isActive ? ' dang-chon' : ''}`}
         >
           <ArrowLeftRight size={20} />

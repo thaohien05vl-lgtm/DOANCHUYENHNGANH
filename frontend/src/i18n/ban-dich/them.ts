@@ -21,4 +21,10 @@ export const banDichThem: BanDich = {
   'Ở lại': ['Stay', '계속 사용', '続ける', '留下'],
   'Ngôn ngữ mới sẽ được áp dụng sau khi khởi động lại ứng dụng.': ['The new language will be applied after restarting the app.', '새 언어는 앱을 다시 시작하면 적용됩니다.', '新しい言語はアプリの再起動後に適用されます。', '新语言将在重启应用后生效。'],
   '{0}{1} tr': ['{0}{1}M', '{0}{1}M', '{0}{1}M', '{0}{1}M'],
+  'Chủ đề hiện tại': ['Current theme', '현재 테마', '現在のテーマ', '当前主题'],
+  'Số dư': ['Balance', '잔액', '残高', '余额'],
+  'Ô nhập liệu': ['Input field', '입력란', '入力欄', '输入框'],
+  'Nút chính': ['Primary button', '기본 버튼', 'メインボタン', '主按钮'],
+  'Sakura Garden': ['Sakura Garden', '사쿠라 가든', 'サクラガーデン', '樱花园'],
+  'Hồng anh đào dịu dàng, nhẹ nhàng và quý phái': ['Gentle cherry-blossom pink, soft and refined', '은은하고 부드러우며 품격 있는 벚꽃 핑크', '優しく穏やかで気品のある桜ピンク', '温柔雅致、柔和高贵的樱花粉'],
 }

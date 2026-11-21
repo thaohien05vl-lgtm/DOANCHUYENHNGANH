@@ -47,3 +47,10 @@ npx cap open android   # build/chạy trong Android Studio
 - Font Be Vietnam Pro đóng gói sẵn trong app (không phụ thuộc Google Fonts → chạy offline, nhanh hơn).
 - Dọn file thừa: `structure.txt`, `test-req.json`, `node_modules` build từ Windows (~260 MB), cache Gradle/IDE. `.gitignore` bổ sung `.env`.
 - Chưa chạy được `mvn test` trong môi trường làm việc (không có Maven) — hãy chạy `mvn test` trên máy bạn.
+
+## 5. Nâng cấp giao diện v3
+- Trang **Chủ đề & Hiển thị** có thẻ **"Chủ đề hiện tại"** xem trước trực tiếp (số dư chạy số, thanh tiến độ, ô nhập, nút chính, nhãn Thu/Chi, họa tiết chủ đề chuyển động nhẹ).
+- Chủ đề *Rose Garden* đổi thành **Sakura Garden** (hồng anh đào dịu); các màu sáng chói (xanh bạc hà ở chủ đề Đêm, vàng, xanh dương) được giảm độ bão hòa — không dùng màu neon.
+- **Logo mới** (chữ F + mũi tên tăng trưởng, ánh kính) đồng bộ ở icon Android, splash gốc, favicon, màn hình khởi động và đầu trang (đổi màu theo chủ đề).
+- **Màn hình khởi động mới (~1,5 s):** khối màu trôi nền, logo dựng từng nét (cột F → thanh → huy hiệu → mũi tên), chữ Finora hiện từng ký tự, câu giới thiệu theo ngôn ngữ, thanh chạy; mờ dần mượt khi vào app.
+- Số dư ở Tổng quan chạy số mượt, viên thuốc nền bật lên ở mục đang chọn trên thanh dưới, thẻ nhấn có phản hồi. Tất cả tôn trọng "Giảm chuyển động".

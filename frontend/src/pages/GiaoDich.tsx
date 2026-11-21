@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
   Calendar,
@@ -22,7 +22,7 @@ import { TrangThaiTrong } from '../components/chung/TrangThaiTrong'
 import { useDuLieu } from '../hooks/useDuLieu'
 import { useGiaoDien } from '../hooks/useGiaoDien'
 import type { GiaoDich } from '../types'
-import { congThang, dinhDangTien, homNayISO, nhanNgay, nhanThang, thangHienTai } from '../utils/dinhDang'
+import { congThang, dinhDangTien, homNayISO, nhanNgay, nhanThang, taoISO, thangHienTai } from '../utils/dinhDang'
 import { tongThuChi } from '../utils/thongKe'
 import { t } from '../utils/ngonNgu'
 
@@ -33,8 +33,34 @@ export function GiaoDichTrang() {
   const kyParam = searchParams.get('ky')
   const idParam = searchParams.get('id')
 
-  // Bộ lọc
-  const [cheDoTg, setCheDoTg] = useState<CheDoThoiGian>(() => (kyParam === 'tat-ca' || idParam ? 'tat-ca' : 'thang'))
+  // Bộ lọc: Mặc định luôn là 'tat-ca' cho cả thanh điều hướng dưới lẫn nút Xem tất cả trang chủ
+  const [cheDoTg, setCheDoTg] = useState<CheDoThoiGian>(() => {
+    if (kyParam === 'thang') return 'thang'
+    if (kyParam === 'hom-nay') return 'hom-nay'
+    if (kyParam === '7-ngay') return '7-ngay'
+    if (kyParam === '30-ngay') return '30-ngay'
+    if (kyParam === 'tuy-chinh') return 'tuy-chinh'
+    return 'tat-ca'
+  })
+
+  // Đồng bộ tức thì khi query parameter thay đổi giữa các lần điều hướng
+  const [prevKyParam, setPrevKyParam] = useState(kyParam)
+  if (kyParam !== prevKyParam) {
+    setPrevKyParam(kyParam)
+    if (kyParam === 'thang' || kyParam === 'hom-nay' || kyParam === '7-ngay' || kyParam === '30-ngay' || kyParam === 'tuy-chinh' || kyParam === 'tat-ca') {
+      setCheDoTg(kyParam)
+    } else if (!kyParam) {
+      setCheDoTg('tat-ca')
+    }
+  }
+
+  const [prevIdParam, setPrevIdParam] = useState(idParam)
+  if (idParam !== prevIdParam) {
+    setPrevIdParam(idParam)
+    if (idParam) {
+      setCheDoTg('tat-ca')
+    }
+  }
   const [thang, setThang] = useState(thangHienTai())
   const [tuNgay, setTuNgay] = useState('')
   const [denNgay, setDenNgay] = useState(homNayISO())
@@ -77,12 +103,12 @@ export function GiaoDichTrang() {
         } else if (cheDoTg === '7-ngay') {
           const moc = new Date()
           moc.setDate(moc.getDate() - 7)
-          const mocStr = moc.toISOString().slice(0, 10)
+          const mocStr = taoISO(moc)
           if (g.ngay < mocStr || g.ngay > homNay) return false
         } else if (cheDoTg === '30-ngay') {
           const moc = new Date()
           moc.setDate(moc.getDate() - 30)
-          const mocStr = moc.toISOString().slice(0, 10)
+          const mocStr = taoISO(moc)
           if (g.ngay < mocStr || g.ngay > homNay) return false
         } else if (cheDoTg === 'tuy-chinh') {
           if (tuNgay && g.ngay < tuNgay) return false
@@ -162,6 +188,12 @@ export function GiaoDichTrang() {
     setMaDm('')
     setChiDinhKy(false)
   }
+
+  useEffect(() => {
+    const onReset = () => datLaiBoLoc()
+    window.addEventListener('finora:reset-giao-dich', onReset)
+    return () => window.removeEventListener('finora:reset-giao-dich', onReset)
+  }, [])
 
   function moThem() {
     setDangSua(null)

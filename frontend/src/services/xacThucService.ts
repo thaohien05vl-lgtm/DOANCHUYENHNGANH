@@ -1,5 +1,5 @@
 import type { NguoiDung } from '../types'
-import { api } from './api'
+import { api, diaChiMayChuHienTai } from './api'
 import { t } from '../utils/ngonNgu'
 
 interface AuthResponse {
@@ -8,7 +8,18 @@ interface AuthResponse {
 }
 
 function thongBaoLoi(error: unknown, macDinh: string): Error {
-  const loi = error as { response?: { data?: { message?: string } }; message?: string }
+  const loi = error as { response?: { data?: { message?: string } }; message?: string; code?: string }
+  const msg = loi.message || ''
+  if (loi.code === 'ECONNABORTED' || msg.toLowerCase().includes('timeout')) {
+    return new Error(
+      t('Hết thời gian chờ kết nối máy chủ ({0}). Hãy đảm bảo điện thoại và máy tính đang cùng kết nối Wi-Fi (tắt 4G), hoặc nhấn "Máy chủ kết nối" bên dưới.', [diaChiMayChuHienTai()])
+    )
+  }
+  if (loi.code === 'ERR_NETWORK' || msg.toLowerCase().includes('network error')) {
+    return new Error(
+      t('Không thể kết nối đến máy chủ {0}. Hãy kiểm tra Wi-Fi và đảm bảo backend đang chạy.', [diaChiMayChuHienTai()])
+    )
+  }
   return new Error(loi.response?.data?.message || loi.message || macDinh)
 }
 

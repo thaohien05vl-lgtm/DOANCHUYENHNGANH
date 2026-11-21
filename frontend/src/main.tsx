@@ -25,14 +25,14 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 )
 
-/** Giữ màn hình khởi động đủ lâu để hoạt ảnh chạy trọn (tối thiểu ~1,1 s kể từ lúc mở app), rồi mờ dần. */
+/** Giữ màn hình khởi động đủ lâu để hoạt ảnh chạy trọn (tối thiểu ~1,5 s kể từ lúc mở app), rồi mờ dần. */
 function ketThucManHinhKhoiDong() {
   const boot = document.getElementById('boot')
   anSplashNative()
   khoiDongOAuthNative()
   if (!boot) return
   const giamChuyenDong = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const toiThieu = giamChuyenDong ? 150 : 1100
+  const toiThieu = giamChuyenDong ? 150 : 1500
   const doi = Math.max(0, toiThieu - performance.now())
   window.setTimeout(() => {
     boot.classList.add('boot-out')

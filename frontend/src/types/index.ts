@@ -67,4 +67,8 @@ export interface ThongBao {
   content: string
   read: boolean
   createdAt: string
+  amount?: number | null
+  categoryName?: string | null
+  walletName?: string | null
+  metadata?: string | null
 }

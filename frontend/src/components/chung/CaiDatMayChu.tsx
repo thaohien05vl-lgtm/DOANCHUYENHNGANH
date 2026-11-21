@@ -41,9 +41,9 @@ export function CaiDatMayChu() {
 
   return (
     <>
-      <button type="button" className="nut-may-chu" onClick={moHop}>
+      <button type="button" className="nut-may-chu" onClick={moHop} title={t('Thay đổi địa chỉ kết nối máy chủ backend')}>
         <Server size={14} />
-        {t('Máy chủ kết nối')}
+        <span>{t('Máy chủ: {0}', [diaChiMayChuHienTai().replace(/^https?:\/\//, '')])}</span>
       </button>
       <Modal mo={mo} dong={() => setMo(false)} tieuDe={t('Máy chủ kết nối')}>
         <div className="truong">

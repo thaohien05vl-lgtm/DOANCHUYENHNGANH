@@ -80,7 +80,7 @@ export function HoaTietChuDe({ themeId, mini = false, className = '', height }: 
 
           {/* Rose Garden / Sakura Garden */}
           <linearGradient id="rg-grad1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#99545c" stopOpacity="0.22" />
+            <stop offset="0%" stopColor="#b4476b" stopOpacity="0.22" />
             <stop offset="100%" stopColor="#f43f5e" stopOpacity="0.03" />
           </linearGradient>
           <linearGradient id="sakura-petal" x1="0" y1="0" x2="1" y2="1">
@@ -278,8 +278,8 @@ export function HoaTietChuDe({ themeId, mini = false, className = '', height }: 
               d="M 260 95 C 268 87, 280 91, 276 103 C 272 111, 256 107, 260 95 Z"
               fill="url(#sakura-petal)"
             />
-            <circle cx="310" cy="90" r="45" fill="none" stroke="#99545c" strokeWidth="1.2" strokeOpacity="0.25" strokeDasharray="5 5" />
-            <circle cx="310" cy="90" r="22" fill="none" stroke="#99545c" strokeWidth="1" strokeOpacity="0.2" />
+            <circle cx="310" cy="90" r="45" fill="none" stroke="#b4476b" strokeWidth="1.2" strokeOpacity="0.25" strokeDasharray="5 5" />
+            <circle cx="310" cy="90" r="22" fill="none" stroke="#b4476b" strokeWidth="1" strokeOpacity="0.2" />
           </g>
         )}
 

@@ -27,23 +27,43 @@
     </script>
     <style>
       #boot { position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center; overflow: hidden;
-        background: var(--nen, var(--boot-nen, #f1f6f3)); transition: opacity .36s ease, transform .36s ease; will-change: opacity, transform; }
-      #boot.boot-out { opacity: 0; transform: scale(1.04); pointer-events: none; }
-      #boot .boot-glow { position: absolute; width: 140vmax; height: 140vmax; left: 50%; top: 50%; margin: -70vmax 0 0 -70vmax;
-        background: radial-gradient(closest-side, color-mix(in srgb, var(--ngoc, #14946f) 22%, transparent), transparent 70%);
-        opacity: 0; transform: scale(.4); animation: boot-glow .9s .05s cubic-bezier(.2,.8,.2,1) forwards; }
-      #boot .boot-hop { position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px; }
-      #boot .boot-logo { width: 92px; height: 92px; opacity: 0; transform: scale(.55) rotate(-8deg);
-        animation: boot-logo .62s .08s cubic-bezier(.2,1.1,.3,1) forwards; filter: drop-shadow(0 14px 22px rgb(0 0 0 / .22)); }
-      #boot .boot-vong { transform-origin: 32px 32px; stroke-dasharray: 145; stroke-dashoffset: 145; animation: boot-ve .8s .25s ease-out forwards; }
-      #boot .boot-chu { font: 800 1.7rem/1 'Be Vietnam Pro', system-ui, sans-serif; letter-spacing: -.03em; color: var(--chu, #12262b);
-        opacity: 0; transform: translateY(10px); animation: boot-len .5s .38s ease-out forwards; }
-      #boot .boot-thanh { width: 56px; height: 4px; border-radius: 4px; background: color-mix(in srgb, var(--ngoc, #14946f) 18%, transparent); overflow: hidden;
-        opacity: 0; animation: boot-len .4s .5s ease-out forwards; }
-      #boot .boot-thanh i { display: block; height: 100%; width: 45%; border-radius: 4px; background: var(--ngoc, #14946f);
-        animation: boot-chay 1s .5s ease-in-out infinite; }
-      @keyframes boot-glow { to { opacity: 1; transform: scale(1); } }
+        background: var(--nen, var(--boot-nen, #f1f6f3)); transition: opacity .42s ease, transform .42s cubic-bezier(.4,0,.2,1); will-change: opacity, transform; }
+      #boot.boot-out { opacity: 0; transform: scale(1.05); pointer-events: none; }
+      #boot.boot-out .boot-hop { transform: translateY(-14px) scale(.94); opacity: 0; transition: transform .42s ease, opacity .3s ease; }
+      /* Ba khối màu mờ trôi nhẹ phía sau, lấy màu theo chủ đề */
+      #boot .bl { position: absolute; border-radius: 50%; filter: blur(46px); opacity: 0; will-change: transform, opacity; }
+      #boot .bl1 { width: 62vmax; height: 62vmax; left: -22vmax; top: -18vmax; background: color-mix(in srgb, var(--ngoc, #137b5d) 26%, transparent); animation: bl-vao 1s .0s ease-out forwards, bl-troi 7s 0s ease-in-out infinite alternate; }
+      #boot .bl2 { width: 56vmax; height: 56vmax; right: -24vmax; bottom: -20vmax; background: color-mix(in srgb, var(--vang, #d79a22) 22%, transparent); animation: bl-vao 1s .1s ease-out forwards, bl-troi 8s .4s ease-in-out infinite alternate-reverse; }
+      #boot .bl3 { width: 40vmax; height: 40vmax; right: -8vmax; top: 6vmax; background: color-mix(in srgb, var(--ngoc-nhat, #d6eee3) 70%, transparent); animation: bl-vao 1s .2s ease-out forwards, bl-troi 9s .2s ease-in-out infinite alternate; }
+      #boot .boot-hop { position: relative; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+      #boot .boot-quang { position: absolute; top: 0; width: 190px; height: 190px; margin-top: -49px; border-radius: 50%;
+        background: radial-gradient(closest-side, color-mix(in srgb, var(--ngoc, #137b5d) 30%, transparent), transparent 72%);
+        opacity: 0; transform: scale(.4); animation: boot-quang .9s .08s cubic-bezier(.2,.8,.2,1) forwards; }
+      #boot .boot-logo { position: relative; width: 104px; height: 104px; opacity: 0; transform: scale(.55) rotate(-9deg);
+        animation: boot-logo .7s .05s cubic-bezier(.2,1.15,.3,1) forwards; filter: drop-shadow(0 16px 26px rgb(10 40 32 / .32)); }
+      #boot .lg-stem, #boot .lg-top, #boot .lg-mid, #boot .lg-badge { transform-box: fill-box; }
+      #boot .lg-stem { transform-origin: 50% 100%; transform: scaleY(0); animation: kp-y .4s .30s cubic-bezier(.2,.9,.3,1.1) forwards; }
+      #boot .lg-top { transform-origin: 0% 50%; transform: scaleX(0); animation: kp-x .34s .46s cubic-bezier(.2,.9,.3,1.1) forwards; }
+      #boot .lg-mid { transform-origin: 0% 50%; transform: scaleX(0); animation: kp-x .3s .56s cubic-bezier(.2,.9,.3,1.1) forwards; }
+      #boot .lg-badge { transform-origin: 50% 50%; transform: scale(0); animation: kp-pop .5s .70s cubic-bezier(.2,1.5,.4,1) forwards; }
+      #boot .lg-arrow { stroke-dasharray: 24; stroke-dashoffset: 24; animation: boot-ve .35s .95s ease-out forwards; }
+      #boot .boot-chu { display: flex; font: 800 1.85rem/1 'Be Vietnam Pro', system-ui, sans-serif; letter-spacing: -.03em; color: var(--chu, #12262b); }
+      #boot .boot-chu span { display: inline-block; opacity: 0; transform: translateY(14px); animation: boot-len .45s ease-out forwards; }
+      #boot .boot-chu span:nth-child(1) { animation-delay: .62s } #boot .boot-chu span:nth-child(2) { animation-delay: .67s }
+      #boot .boot-chu span:nth-child(3) { animation-delay: .72s } #boot .boot-chu span:nth-child(4) { animation-delay: .77s }
+      #boot .boot-chu span:nth-child(5) { animation-delay: .82s } #boot .boot-chu span:nth-child(6) { animation-delay: .87s }
+      #boot .boot-tag { margin-top: -4px; font: 500 .8rem/1.3 'Be Vietnam Pro', system-ui, sans-serif; color: var(--chu-phu, #567a73); letter-spacing: .01em;
+        opacity: 0; transform: translateY(8px); animation: boot-len .5s 1s ease-out forwards; text-align: center; padding: 0 24px; }
+      #boot .boot-thanh { margin-top: 6px; width: 64px; height: 4px; border-radius: 4px; overflow: hidden; background: color-mix(in srgb, var(--ngoc, #137b5d) 16%, transparent);
+        opacity: 0; animation: boot-len .4s .8s ease-out forwards; }
+      #boot .boot-thanh i { display: block; height: 100%; width: 46%; border-radius: 4px; background: var(--ngoc, #137b5d); animation: boot-chay 1.05s .9s ease-in-out infinite; }
+      @keyframes bl-vao { to { opacity: 1; } }
+      @keyframes bl-troi { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(5vmax,4vmax,0) scale(1.12); } }
+      @keyframes boot-quang { to { opacity: 1; transform: scale(1); } }
       @keyframes boot-logo { to { opacity: 1; transform: none; } }
+      @keyframes kp-y { to { transform: scaleY(1); } }
+      @keyframes kp-x { to { transform: scaleX(1); } }
+      @keyframes kp-pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
       @keyframes boot-ve { to { stroke-dashoffset: 0; } }
       @keyframes boot-len { to { opacity: 1; transform: none; } }
       @keyframes boot-chay { from { transform: translateX(-100%); } to { transform: translateX(240%); } }
@@ -52,20 +72,38 @@
   </head>
   <body>
     <div id="boot" aria-hidden="true">
-      <div class="boot-glow"></div>
+      <div class="bl bl1"></div><div class="bl bl2"></div><div class="bl bl3"></div>
       <div class="boot-hop">
+        <div class="boot-quang"></div>
         <svg class="boot-logo" viewBox="0 0 64 64">
-          <defs><linearGradient id="bootg" x1="10" y1="8" x2="56" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#24564b" /><stop offset="1" stop-color="#143b32" /></linearGradient></defs>
-          <rect width="64" height="64" rx="19" fill="url(#bootg)" />
-          <circle class="boot-vong" cx="32" cy="32" r="23" fill="none" stroke="#2fc39a" stroke-opacity=".7" stroke-width="1.6" stroke-linecap="round" />
-          <path d="M21 45V19h23v6H28v6h13v6H28v8h-7Z" fill="#fff" />
-          <circle cx="39" cy="41.5" r="5.5" fill="#2fc39a" stroke="#143b32" stroke-width="2" />
-          <path d="m36.7 41.6 1.6 1.6 3.2-3.5" fill="none" stroke="#143b32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          <defs>
+    <linearGradient id="bt-tile" x1="8" y1="4" x2="58" y2="62" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--muc-2,#33705f)"/><stop offset="1" style="stop-color:var(--muc,#0f342c)"/></linearGradient>
+    <radialGradient id="bt-gloss" cx="0.2" cy="0.1" r="0.85"><stop stop-color="#fff" stop-opacity=".30"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="bt-chu" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#d3ebe2"/></linearGradient>
+    <linearGradient id="bt-huy" x1="0" y1="0" x2="1" y2="1"><stop style="stop-color:color-mix(in srgb,var(--ngoc,#43b896) 62%,#fff)"/><stop offset="1" style="stop-color:var(--ngoc,#3ea88a)"/></linearGradient>
+  </defs>
+  <rect class="lg-tile" width="64" height="64" rx="18" fill="url(#bt-tile)"/>
+  <rect class="lg-tile" width="64" height="64" rx="18" fill="url(#bt-gloss)"/>
+  <rect class="lg-tile" x=".5" y=".5" width="63" height="63" rx="17.5" fill="none" stroke="#fff" stroke-opacity=".12"/>
+  <rect class="lg-stem" x="19" y="16" width="8.5" height="32" rx="3.2" fill="url(#bt-chu)"/>
+  <rect class="lg-top" x="19" y="16" width="26" height="8" rx="3.2" fill="url(#bt-chu)"/>
+  <rect class="lg-mid" x="19" y="29.5" width="18" height="7.4" rx="3.2" fill="url(#bt-chu)"/>
+  <g class="lg-badge"><circle cx="43.5" cy="42.5" r="9.2" fill="url(#bt-huy)" stroke="#123b32" stroke-width="2.4"/>
+  <path class="lg-arrow" d="M39.8 46.2 46.4 39.6M41.2 39.4h5.4v5.4" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></g>
         </svg>
-        <div class="boot-chu">Finora</div>
+        <div class="boot-chu"><span>F</span><span>i</span><span>n</span><span>o</span><span>r</span><span>a</span></div>
+        <div class="boot-tag" id="boot-tag">Quản lý tài chính cá nhân</div>
         <div class="boot-thanh"><i></i></div>
       </div>
     </div>
+    <script>
+      (function () {
+        var m = { vi: 'Quản lý tài chính cá nhân', en: 'Personal finance, simplified', ko: '스마트한 개인 재무 관리', ja: 'スマートな資産管理', zh: '智能个人财务管理' }
+        var l = document.documentElement.lang
+        var e = document.getElementById('boot-tag')
+        if (e && m[l]) e.textContent = m[l]
+      })()
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

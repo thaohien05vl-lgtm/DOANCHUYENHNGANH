@@ -14,6 +14,7 @@ import { useGiaoDien } from '../hooks/useGiaoDien'
 import type { GiaoDich } from '../types'
 import { dinhDangGon, dinhDangTien, homNayISO, nhanThang, soNgayTrongThang, thangHienTai } from '../utils/dinhDang'
 import { chiTheoDanhMuc, chiTheoNgay, chuoiThang, soDuVi, theoThang, tongThuChi } from '../utils/thongKe'
+import { SoChay } from '../components/chung/SoChay'
 import { t, dichTen } from '../utils/ngonNgu'
 
 export function TongQuan() {
@@ -34,7 +35,12 @@ export function TongQuan() {
       tongSoDu: vi.reduce((s, v) => s + soDuVi(v, giaoDich), 0),
       theoDm: chiTheoDanhMuc(gdThang, danhMuc),
       sauThang: chuoiThang(giaoDich, thang, 6),
-      ganDay: [...giaoDich].sort((a, b) => (a.ngay < b.ngay ? 1 : -1)).slice(0, 6),
+      ganDay: [...giaoDich]
+        .sort((a, b) => {
+          if (a.ngay !== b.ngay) return b.ngay.localeCompare(a.ngay)
+          return b.id.localeCompare(a.id)
+        })
+        .slice(0, 6),
       gdThang,
     }
   }, [giaoDich, danhMuc, vi, thang])
@@ -54,7 +60,7 @@ export function TongQuan() {
         <div className="hero-hang">
           <div>
             <div className="hero-so-du-label"><div className="nhan-hero">{t('Tổng số dư các ví')}</div><button type="button" className="an-hien-so" onClick={doiAnSoDu} aria-label={anSoDu ? t('Hiện số dư') : t('Ẩn số dư')} title={anSoDu ? t('Hiện số dư') : t('Ẩn số dư')}>{anSoDu ? <EyeOff size={18} /> : <Eye size={18} />}</button></div>
-            <div className="so-lon so">{dinhDangTien(kq.tongSoDu).replace(' ₫', '')}<small>₫</small></div>
+            <div className="so-lon so"><SoChay gia={kq.tongSoDu} dinhDang={(n) => dinhDangTien(n).replace(' ₫', '')} /><small>₫</small></div>
           </div>
           <div className="vi-chip-hang">
             {vi.map((v) => (
@@ -144,7 +150,7 @@ export function TongQuan() {
         <section className="the the-phang">
           <div className="the-dau" style={{ padding: '20px 20px 0' }}>
             <h2>{t('Giao dịch gần đây')}</h2>
-            <Link to="/giao-dich?ky=tat-ca" className="nho dam">{t('Xem tất cả')}</Link>
+            <Link to="/giao-dich" className="nho dam">{t('Xem tất cả')}</Link>
           </div>
           {kq.ganDay.length ? kq.ganDay.map((g) => (
             <DongGiaoDich

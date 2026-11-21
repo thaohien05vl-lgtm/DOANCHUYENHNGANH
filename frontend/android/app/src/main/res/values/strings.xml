@@ -7,6 +7,6 @@
     <!-- Facebook: App ID công khai; Client Token lấy ở Meta for Developers → App settings → Advanced.
          Giá trị thật được nạp lúc chạy từ VITE_FACEBOOK_APP_ID / VITE_FACEBOOK_CLIENT_TOKEN (frontend/.env). -->
     <string name="facebook_app_id">1693121562505674</string>
-    <string name="facebook_client_token">THAY_BANG_CLIENT_TOKEN</string>
+    <string name="facebook_client_token">a5772379cb48e111a10e101eb01a7266</string>
     <string name="fb_login_protocol_scheme">fb1693121562505674</string>
 </resources>

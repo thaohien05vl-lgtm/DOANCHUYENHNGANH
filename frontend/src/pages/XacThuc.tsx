@@ -17,7 +17,7 @@ import { BieuTrungLogo } from '../components/chung/Logo'
 import { useGiaoDien } from '../hooks/useGiaoDien'
 import { useXacThuc } from '../hooks/useXacThuc'
 import { quenMatKhauApi } from '../services/xacThucService'
-import { dangNhapGoogle, dangNhapFacebook, laApp } from '../utils/oauthClient'
+import { dangNhapGoogle, dangNhapFacebook } from '../utils/oauthClient'
 import { CaiDatMayChu } from '../components/chung/CaiDatMayChu'
 import { t } from '../utils/ngonNgu'
 
@@ -273,11 +273,9 @@ export function DangNhap() {
           {t('Đăng ký ngay')}
         </Link>
       </p>
-      {laApp() && (
-        <div style={{ textAlign: 'center' }}>
-          <CaiDatMayChu />
-        </div>
-      )}
+      <div style={{ textAlign: 'center', marginTop: 4 }}>
+        <CaiDatMayChu />
+      </div>
     </KhungXacThuc>
   )
 }

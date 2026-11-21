@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Check, Heart, Monitor, Moon, Palette, Sparkles, Sun } from 'lucide-react'
 import { HoaTietChuDe } from '../components/chung/HoaTietChuDe'
 import { TieuDeTrang } from '../components/chung/TieuDeTrang'
+import { XemTruocChuDe } from '../components/chung/XemTruocChuDe'
 import { DANH_SACH_CHU_DE, type ChuDe, type NhomChuDe } from '../data/chuDe'
 import { useGiaoDien } from '../hooks/useGiaoDien'
 import { t } from '../utils/ngonNgu'
@@ -57,6 +58,8 @@ export function ChuDeTrang() {
         coNutQuayVe
         duongDanQuayVe="/ca-nhan"
       />
+
+      <XemTruocChuDe />
 
       {/* ============================================================
           1. CHẾ ĐỘ SÁNG / TỐI / HỆ THỐNG & GIẢM CHUYỂN ĐỘNG (THEO HÌNH 2)
