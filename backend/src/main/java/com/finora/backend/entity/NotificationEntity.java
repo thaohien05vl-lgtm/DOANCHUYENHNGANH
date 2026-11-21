@@ -24,6 +24,18 @@ public class NotificationEntity extends OwnedEntity {
     @Column(nullable = false, name = "is_read")
     private boolean read = false;
 
+    @Column(name = "amount", precision = 18, scale = 2)
+    private java.math.BigDecimal amount;
+
+    @Column(length = 100, name = "category_name")
+    private String categoryName;
+
+    @Column(length = 100, name = "wallet_name")
+    private String walletName;
+
+    @Column(length = 500, name = "metadata")
+    private String metadata;
+
     @Column(nullable = false, name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -41,6 +53,18 @@ public class NotificationEntity extends OwnedEntity {
 
     public boolean isRead() { return read; }
     public void setRead(boolean read) { this.read = read; }
+
+    public java.math.BigDecimal getAmount() { return amount; }
+    public void setAmount(java.math.BigDecimal amount) { this.amount = amount; }
+
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+
+    public String getWalletName() { return walletName; }
+    public void setWalletName(String walletName) { this.walletName = walletName; }
+
+    public String getMetadata() { return metadata; }
+    public void setMetadata(String metadata) { this.metadata = metadata; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

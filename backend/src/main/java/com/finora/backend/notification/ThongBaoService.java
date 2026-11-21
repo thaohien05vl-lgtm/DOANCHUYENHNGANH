@@ -86,8 +86,28 @@ public class ThongBaoService {
         String catName = category != null && category.getName() != null ? category.getName() : "Không phân loại";
         String walletName = wallet != null && wallet.getName() != null ? wallet.getName() : "Ví";
         String noteStr = transaction.getNote() != null && !transaction.getNote().isBlank() ? " (" + transaction.getNote() + ")" : "";
+        boolean isRecurring = transaction.getRecurringType() != null && !transaction.getRecurringType().isBlank();
 
-        if ("thu".equalsIgnoreCase(transaction.getType())) {
+        String txType = transaction.getType() != null ? transaction.getType().toLowerCase() : "";
+
+        if (txType.contains("hoan_tien") || (transaction.getNote() != null && transaction.getNote().toLowerCase().contains("hoàn tiền"))) {
+            n.setType("giao_dich_hoan_tien");
+            n.setTitle("Hoàn tiền thành công");
+            n.setContent("Bạn vừa nhận được khoản hoàn tiền " + tienStr + " vào ví " + walletName + ".");
+        } else if (txType.contains("chuyen")) {
+            n.setType("giao_dich_chuyen_tien");
+            n.setTitle("Chuyển tiền thành công");
+            n.setContent("Bạn vừa thực hiện chuyển " + tienStr + " từ ví " + walletName + ".");
+        } else if (isRecurring) {
+            n.setType("giao_dich_dinh_ky");
+            if ("thu".equalsIgnoreCase(txType)) {
+                n.setTitle("Giao dịch định kỳ: Thu nhập");
+                n.setContent("Hệ thống vừa ghi nhận khoản thu định kỳ " + tienStr + " từ " + catName + noteStr + " vào ví " + walletName + ".");
+            } else {
+                n.setTitle("Giao dịch định kỳ: Chi tiêu");
+                n.setContent("Hệ thống vừa ghi nhận khoản chi định kỳ " + tienStr + " cho " + catName + noteStr + " từ ví " + walletName + ".");
+            }
+        } else if ("thu".equalsIgnoreCase(txType)) {
             n.setType("giao_dich_thu");
             n.setTitle("Giao dịch thu nhập thành công");
             n.setContent("Bạn vừa ghi nhận khoản thu " + tienStr + " từ " + catName + noteStr + " vào ví " + walletName + ".");
@@ -96,6 +116,9 @@ public class ThongBaoService {
             n.setTitle("Giao dịch chi tiêu thành công");
             n.setContent("Bạn vừa ghi nhận khoản chi " + tienStr + " cho " + catName + noteStr + " từ ví " + walletName + ".");
         }
+        n.setAmount(transaction.getAmount());
+        n.setCategoryName(catName);
+        n.setWalletName(walletName);
 
         notificationRepository.save(n);
     }
@@ -132,10 +155,35 @@ public class ThongBaoService {
             n.setType("ngan_sach_canh_bao");
             n.setTitle(title);
             n.setContent(content);
+            n.setAmount(tongChiThang);
+            n.setCategoryName(catName);
+            n.setMetadata(hanMuc.toPlainString());
             n.setRead(false);
             n.setCreatedAt(LocalDateTime.now());
             notificationRepository.save(n);
         }
+    }
+
+    @Transactional
+    public void taoThongBaoMucTieu(String userId, String goalId, String goalName, BigDecimal targetAmount, BigDecimal savedAmount) {
+        String title = "Đạt mục tiêu tích luỹ: " + (goalName != null ? goalName : "Mục tiêu");
+        if (notificationRepository.existsByUserIdAndTypeAndTitle(userId, "tiet_kiem_muc_tieu", title)) {
+            return;
+        }
+        NotificationEntity n = new NotificationEntity();
+        n.setId(UUID.randomUUID().toString());
+        n.setUserId(userId);
+        n.setTransactionId(null);
+        n.setType("tiet_kiem_muc_tieu");
+        n.setTitle(title);
+        n.setContent("Chúc mừng! Bạn đã đạt 100% mục tiêu tích luỹ " + (goalName != null ? goalName : "")
+                + " (" + formatTien(savedAmount) + " / " + formatTien(targetAmount) + "). Xuất sắc!");
+        n.setAmount(savedAmount);
+        n.setCategoryName("Tiết kiệm");
+        n.setMetadata(targetAmount != null ? targetAmount.toPlainString() : null);
+        n.setRead(false);
+        n.setCreatedAt(LocalDateTime.now());
+        notificationRepository.save(n);
     }
 
     private ThongBaoDto mapDto(NotificationEntity e) {
@@ -146,8 +194,11 @@ public class ThongBaoService {
                 e.getTitle(),
                 e.getContent(),
                 e.isRead(),
-                e.getCreatedAt() != null ? e.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : ""
+                e.getCreatedAt() != null ? e.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : "",
+                e.getAmount(),
+                e.getCategoryName(),
+                e.getWalletName(),
+                e.getMetadata()
         );
     }
 }
-

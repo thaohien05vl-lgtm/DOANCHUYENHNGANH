@@ -1,0 +1,1051 @@
+/* ============================================================
+   FINORA – PREMIUM SMART FINANCIAL NOTIFICATION CENTER
+   Hệ thống trung tâm thông báo tài chính cao cấp Finora
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. BẢNG BIẾN TOKENS THÍCH ỨNG 100% VỚI 15 THEME CỦA FINORA
+   ------------------------------------------------------------ */
+.finora-notif-backdrop,
+.finora-notif-sheet,
+.finora-notif-detail-sheet {
+  --notification-surface: var(--be-mat, #ffffff);
+  --notification-card-bg: var(--be-mat-2, #f6f9f8);
+  --notification-card-border: var(--vien, #e2e9e7);
+  --notification-primary: var(--ngoc, #14946f);
+  --notification-primary-dark: var(--ngoc-dam, #0f7a5b);
+  --notification-tint: var(--ngoc-nhat, #dff3ea);
+  --notification-text: var(--chu, #12262b);
+  --notification-muted: var(--chu-mo, #8a9c9e);
+  --notification-sub: var(--chu-phu, #587073);
+  --notification-income: var(--ngoc, #14946f);
+  --notification-expense: var(--san-ho, #e5593f);
+  --notification-warning: var(--vang, #d79a22);
+  --notification-info: var(--xanh, #2f6fdb);
+  --notification-shadow: var(--bong-lon, 0 24px 60px -20px rgba(14, 42, 45, 0.35));
+  --notification-glow: color-mix(in srgb, var(--notification-primary) 22%, transparent);
+}
+
+[data-theme-mode='dark'] .finora-notif-backdrop,
+[data-theme-mode='dark'] .finora-notif-sheet,
+[data-theme-mode='dark'] .finora-notif-detail-sheet {
+  --notification-surface: var(--be-mat, #11222a);
+  --notification-card-bg: var(--be-mat-2, #142830);
+  --notification-card-border: var(--vien, #1f3740);
+  --notification-text: var(--chu, #e7f0ee);
+  --notification-muted: var(--chu-mo, #6c8588);
+  --notification-sub: var(--chu-phu, #9db3b5);
+  --notification-shadow: var(--bong-lon, 0 24px 60px -20px rgba(0, 0, 0, 0.65));
+}
+
+/* ------------------------------------------------------------
+   2. BACKDROP ĐỘC LẬP & TÁCH LỚP Z-INDEX
+   ------------------------------------------------------------ */
+.finora-notif-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2150;
+  background: rgba(10, 18, 22, 0.64);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: finora-notif-fade-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes finora-notif-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ------------------------------------------------------------
+   3. CỬA SỔ TRUNG TÂM THÔNG BÁO (NOTIFICATION SHEET)
+   ------------------------------------------------------------ */
+.finora-notif-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+  background: var(--notification-surface);
+  border-radius: 26px;
+  border: 1px solid var(--notification-card-border);
+  box-shadow: var(--notification-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: finora-notif-slide-up 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes finora-notif-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ------------------------------------------------------------
+   4. PHẦN HEADER CAO CẤP
+   ------------------------------------------------------------ */
+.finora-notif-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--notification-card-border);
+  background: color-mix(in srgb, var(--notification-card-bg) 60%, var(--notification-surface));
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.finora-notif-header__left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.finora-notif-header__title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.finora-notif-header__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 750;
+  color: var(--notification-text);
+  letter-spacing: -0.015em;
+  white-space: nowrap !important;
+}
+
+.finora-notif-header__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--notification-expense);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 750;
+  line-height: 1;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--notification-expense) 40%, transparent);
+}
+
+.finora-notif-header__subtitle {
+  margin: 0;
+  font-size: 0.74rem;
+  color: var(--notification-muted);
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.finora-notif-header__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.finora-notif-btn-read-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 650;
+  color: var(--notification-primary);
+  background: color-mix(in srgb, var(--notification-primary) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--notification-primary) 28%, transparent);
+  cursor: pointer;
+  white-space: nowrap !important;
+  transition: all 0.2s ease;
+}
+
+.finora-notif-btn-read-all:hover {
+  background: color-mix(in srgb, var(--notification-primary) 20%, transparent);
+  transform: translateY(-1px);
+}
+
+.finora-notif-btn-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--notification-card-bg) 85%, transparent);
+  border: 1px solid var(--notification-card-border);
+  color: var(--notification-sub);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.finora-notif-btn-close:hover {
+  background: var(--notification-card-border);
+  color: var(--notification-text);
+  transform: rotate(90deg);
+}
+
+/* ------------------------------------------------------------
+   5. BỘ LỌC TABS (CUỘN NGANG LINH HOẠT)
+   ------------------------------------------------------------ */
+.finora-notif-tabs-wrap {
+  padding: 10px 18px 6px;
+  border-bottom: 1px solid var(--notification-card-border);
+  background: var(--notification-surface);
+  flex-shrink: 0;
+}
+
+.finora-notif-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.finora-notif-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.finora-notif-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--notification-sub);
+  background: var(--notification-card-bg);
+  border: 1px solid var(--notification-card-border);
+  cursor: pointer;
+  white-space: nowrap !important;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.finora-notif-tab:hover {
+  color: var(--notification-text);
+  border-color: color-mix(in srgb, var(--notification-primary) 38%, var(--notification-card-border));
+}
+
+.finora-notif-tab--active {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--notification-primary), var(--notification-primary-dark)) !important;
+  border-color: transparent !important;
+  box-shadow: 0 3px 12px var(--notification-glow);
+}
+
+.finora-notif-tab__count {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.25);
+  color: inherit;
+}
+
+.finora-notif-tab:not(.finora-notif-tab--active) .finora-notif-tab__count {
+  background: color-mix(in srgb, var(--notification-muted) 16%, transparent);
+  color: var(--notification-sub);
+}
+
+/* ------------------------------------------------------------
+   6. DANH SÁCH THÔNG BÁO & NHÓM THEO THỜI GIAN
+   ------------------------------------------------------------ */
+.finora-notif-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.finora-notif-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+  color: var(--notification-muted);
+}
+
+.finora-notif-loading__badge {
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--notification-card-bg);
+  border: 1px solid var(--notification-card-border);
+}
+
+.finora-notif-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.finora-notif-group__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 2px 2px;
+}
+
+.finora-notif-group__title {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--notification-muted);
+  white-space: nowrap !important;
+  flex-shrink: 0;
+}
+
+.finora-notif-group__line {
+  flex: 1;
+  height: 1px;
+  background: color-mix(in srgb, var(--notification-card-border) 70%, transparent);
+}
+
+/* ------------------------------------------------------------
+   7. CARD THÔNG BÁO TÀI CHÍNH MỚI (PREMIUM NOTIFICATION CARD)
+   ------------------------------------------------------------ */
+.finora-notif-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: var(--notification-card-bg);
+  border: 1px solid var(--notification-card-border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  user-select: none;
+}
+
+.finora-notif-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--notification-primary) 40%, var(--notification-card-border));
+  box-shadow: 0 6px 20px -6px var(--notification-glow);
+}
+
+/* Trạng thái chưa đọc: Dải viền nổi bật & vệt mờ tinh tế */
+.finora-notif-card--unread {
+  background: color-mix(in srgb, var(--notification-primary) 5%, var(--notification-surface));
+  border-color: color-mix(in srgb, var(--notification-primary) 32%, var(--notification-card-border));
+}
+
+.finora-notif-card--unread::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3.5px;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(to bottom, var(--notification-primary), var(--notification-primary-dark));
+  box-shadow: 0 0 6px var(--notification-glow);
+}
+
+/* Huy hiệu (Medallion) chứa hình Finora Finance Glyph độc quyền */
+.finora-notif-card__medallion {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.22s ease;
+}
+
+.finora-notif-card:hover .finora-notif-card__medallion {
+  transform: scale(1.05);
+}
+
+/* Tông màu pastel nền riêng cho từng nhóm minh họa */
+.finora-notif-card__medallion--income {
+  background: radial-gradient(circle at 35% 35%, #ecfdf5, #d1fae5);
+  border-color: #a7f3d0;
+}
+
+.finora-notif-card__medallion--expense {
+  background: radial-gradient(circle at 35% 35%, #fff1f2, #ffe4e6);
+  border-color: #fecdd3;
+}
+
+.finora-notif-card__medallion--transfer {
+  background: radial-gradient(circle at 35% 35%, #f0fdfa, #ccfbf1);
+  border-color: #99f6e4;
+}
+
+.finora-notif-card__medallion--budget {
+  background: radial-gradient(circle at 35% 35%, #fffbeb, #fef3c7);
+  border-color: #fde68a;
+}
+
+.finora-notif-card__medallion--savings {
+  background: radial-gradient(circle at 35% 35%, #ecfeff, #cffafe);
+  border-color: #a5f3fc;
+}
+
+.finora-notif-card__medallion--reminder {
+  background: radial-gradient(circle at 35% 35%, #faf5ff, #f3e8ff);
+  border-color: #e9d5ff;
+}
+
+.finora-notif-card__medallion--recurring {
+  background: radial-gradient(circle at 35% 35%, #eff6ff, #dbeafe);
+  border-color: #bfdbfe;
+}
+
+.finora-notif-card__medallion--refund {
+  background: radial-gradient(circle at 35% 35%, #f0fdf4, #dcfce7);
+  border-color: #bbf7d0;
+}
+
+.finora-notif-card__medallion--statement {
+  background: radial-gradient(circle at 35% 35%, #f0f9ff, #e0f2fe);
+  border-color: #bae6fd;
+}
+
+.finora-notif-card__medallion--alert {
+  background: radial-gradient(circle at 35% 35%, #fff7ed, #ffedd5);
+  border-color: #fed7aa;
+}
+
+.finora-notif-card__medallion--general {
+  background: radial-gradient(circle at 35% 35%, #f5f3ff, #ede9fe);
+  border-color: #ddd6fe;
+}
+
+/* Hỗ trợ chế độ tối Dark Mode cho các huy hiệu */
+[data-theme-mode='dark'] .finora-notif-card__medallion {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme-mode='dark'] .finora-notif-card__medallion--income {
+  background: radial-gradient(circle at 35% 35%, #064e3b, #022c22);
+}
+[data-theme-mode='dark'] .finora-notif-card__medallion--expense {
+  background: radial-gradient(circle at 35% 35%, #4c0519, #27030c);
+}
+[data-theme-mode='dark'] .finora-notif-card__medallion--transfer {
+  background: radial-gradient(circle at 35% 35%, #134e4a, #042f2e);
+}
+[data-theme-mode='dark'] .finora-notif-card__medallion--budget {
+  background: radial-gradient(circle at 35% 35%, #451a03, #290f02);
+}
+[data-theme-mode='dark'] .finora-notif-card__medallion--savings {
+  background: radial-gradient(circle at 35% 35%, #164e63, #083344);
+}
+[data-theme-mode='dark'] .finora-notif-card__medallion--reminder {
+  background: radial-gradient(circle at 35% 35%, #3b0764, #24033f);
+}
+[data-theme-mode='dark'] .finora-notif-card__medallion--recurring {
+  background: radial-gradient(circle at 35% 35%, #1e3a8a, #0f172a);
+}
+[data-theme-mode='dark'] .finora-notif-card__medallion--refund {
+  background: radial-gradient(circle at 35% 35%, #14532d, #052e16);
+}
+[data-theme-mode='dark'] .finora-notif-card__medallion--statement {
+  background: radial-gradient(circle at 35% 35%, #0c4a6e, #082f49);
+}
+[data-theme-mode='dark'] .finora-notif-card__medallion--alert {
+  background: radial-gradient(circle at 35% 35%, #431407, #270a04);
+}
+[data-theme-mode='dark'] .finora-notif-card__medallion--general {
+  background: radial-gradient(circle at 35% 35%, #2e1065, #1e1b4b);
+}
+
+/* Zone 2: Khu vực thông tin chi tiết */
+.finora-notif-card__info {
+  flex: 1;
+  min-width: 0; /* Bắt buộc để text-overflow và nowrap hoạt động chính xác */
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Hàng 1: Tiêu đề & Thời gian */
+.finora-notif-card__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.finora-notif-card__title {
+  margin: 0;
+  font-size: 0.91rem;
+  font-weight: 700;
+  color: var(--notification-text);
+  letter-spacing: -0.01em;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  min-width: 0;
+}
+
+.finora-notif-card__time {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--notification-muted);
+  white-space: nowrap !important;
+  flex-shrink: 0;
+}
+
+/* Hàng 2: Số tiền tài chính - TUYỆT ĐỐI NẰM TRÊN MỘT DÒNG DUY NHẤT */
+.finora-notif-card__amount-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 1px 0;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.finora-notif-card__amount {
+  font-size: 1.02rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  white-space: nowrap !important;
+  flex-shrink: 0;
+}
+
+.finora-notif-card__amount--income {
+  color: var(--notification-income);
+}
+
+.finora-notif-card__amount--expense {
+  color: var(--notification-expense);
+}
+
+.finora-notif-card__amount--budget {
+  color: var(--notification-warning);
+}
+
+.finora-notif-card__amount--saving,
+.finora-notif-card__amount--tiet-kiem {
+  color: var(--notification-primary);
+}
+
+.finora-notif-card__amount--transfer,
+.finora-notif-card__amount--chuyen-tien {
+  color: var(--notification-info);
+}
+
+.finora-notif-card__amount--refund,
+.finora-notif-card__amount--hoan-tien {
+  color: var(--notification-income);
+}
+
+.finora-notif-card__amount--trung-tinh {
+  color: var(--notification-text);
+}
+
+/* Tags Danh mục & Ví tiền */
+.finora-notif-card__tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.finora-notif-card__tag {
+  font-size: 0.7rem;
+  font-weight: 650;
+  padding: 1.5px 7px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--notification-muted) 12%, transparent);
+  color: var(--notification-sub);
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+}
+
+.finora-notif-card__tag--category {
+  background: color-mix(in srgb, var(--notification-primary) 12%, transparent);
+  color: var(--notification-primary);
+}
+
+.finora-notif-card__tag--wallet {
+  background: color-mix(in srgb, var(--notification-info) 10%, transparent);
+  color: var(--notification-info);
+}
+
+/* Thanh tiến trình ngân sách */
+.finora-notif-card__progress-wrap {
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--notification-muted) 16%, transparent);
+  overflow: hidden;
+  margin: 3px 0 2px;
+}
+
+.finora-notif-card__progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.finora-notif-card__progress-bar--warning {
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.finora-notif-card__progress-bar--exceeded {
+  background: linear-gradient(90deg, #f43f5e, #be123c);
+}
+
+/* Hàng 3: Mô tả (2 dòng line-clamp gọn gàng) */
+.finora-notif-card__desc {
+  margin: 2px 0 0;
+  font-size: 0.78rem;
+  color: var(--notification-muted);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+/* Hàng 4: CTA xem giao dịch */
+.finora-notif-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: var(--notification-primary);
+  white-space: nowrap !important;
+}
+
+.finora-notif-card__cta:hover {
+  text-decoration: underline;
+}
+
+/* Zone 3: Hành động bên phải (Chấm chưa đọc & Nút xóa) */
+.finora-notif-card__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  align-self: stretch;
+  flex-shrink: 0;
+}
+
+.finora-notif-card__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--notification-primary);
+  box-shadow: 0 0 6px var(--notification-primary);
+}
+
+.finora-notif-card__dot-placeholder {
+  width: 8px;
+  height: 8px;
+}
+
+.finora-notif-card__btn-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--notification-muted);
+  cursor: pointer;
+  opacity: 0.45;
+  transition: all 0.2s ease;
+}
+
+.finora-notif-card:hover .finora-notif-card__btn-delete {
+  opacity: 0.85;
+}
+
+.finora-notif-card__btn-delete:hover {
+  opacity: 1 !important;
+  color: var(--notification-expense);
+  background: color-mix(in srgb, var(--notification-expense) 14%, transparent);
+  transform: scale(1.1);
+}
+
+/* ------------------------------------------------------------
+   8. TRẠNG THÁI RỖNG (EMPTY STATE)
+   ------------------------------------------------------------ */
+.finora-notif-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 44px 20px;
+  gap: 14px;
+}
+
+.finora-notif-empty__svg {
+  filter: drop-shadow(0 6px 18px var(--notification-glow));
+  animation: finora-notif-float 4s ease-in-out infinite;
+}
+
+@keyframes finora-notif-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.finora-notif-empty__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 750;
+  color: var(--notification-text);
+  white-space: nowrap !important;
+}
+
+.finora-notif-empty__desc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--notification-muted);
+  line-height: 1.45;
+  max-width: 320px;
+}
+
+/* ------------------------------------------------------------
+   9. MODAL CHI TIẾT THÔNG BÁO (DETAIL SHEET)
+   ------------------------------------------------------------ */
+.finora-notif-detail-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  background: var(--notification-surface);
+  border-radius: 26px;
+  border: 1px solid var(--notification-card-border);
+  box-shadow: var(--notification-shadow);
+  overflow: hidden;
+  animation: finora-notif-slide-up 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.finora-notif-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--notification-card-border);
+  background: color-mix(in srgb, var(--notification-card-bg) 60%, var(--notification-surface));
+}
+
+.finora-notif-detail-header__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.finora-notif-detail-header__tag {
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--notification-primary);
+  white-space: nowrap !important;
+}
+
+.finora-notif-detail-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.finora-notif-detail-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--notification-card-bg);
+  border: 1px solid var(--notification-card-border);
+}
+
+.finora-notif-detail-card__medallion {
+  width: 48px !important;
+  height: 48px !important;
+}
+
+.finora-notif-detail-card__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.finora-notif-detail-card__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 750;
+  color: var(--notification-text);
+}
+
+.finora-notif-detail-card__amount {
+  font-size: 1.25rem !important;
+  margin-top: 4px;
+}
+
+.finora-notif-detail-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--notification-card-bg) 60%, var(--notification-surface));
+  border: 1px solid var(--notification-card-border);
+}
+
+.finora-notif-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.82rem;
+}
+
+.finora-notif-detail-row span:first-child {
+  color: var(--notification-muted);
+}
+
+.finora-notif-detail-row span:last-child {
+  font-weight: 650;
+  color: var(--notification-text);
+  white-space: nowrap !important;
+}
+
+.finora-notif-detail-row__highlight {
+  color: var(--notification-primary) !important;
+}
+
+.finora-notif-detail-body {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--notification-card-bg);
+  border: 1px solid var(--notification-card-border);
+  font-size: 0.84rem;
+  color: var(--notification-text);
+  line-height: 1.5;
+}
+
+.finora-notif-detail-body__label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--notification-muted);
+  margin-bottom: 4px;
+  letter-spacing: 0.06em;
+}
+
+.finora-notif-detail-body__text {
+  margin: 0;
+}
+
+.finora-notif-detail-btn-go {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--notification-primary), var(--notification-primary-dark));
+  border: none;
+  box-shadow: 0 4px 14px var(--notification-glow);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.finora-notif-detail-btn-go:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 18px var(--notification-glow);
+}
+
+/* ------------------------------------------------------------
+   10. MICRO-ANIMATIONS CHO GLYPHS
+   ------------------------------------------------------------ */
+@keyframes finora-glyph-coin-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.finora-glyph--animated .finora-glyph__coin-float {
+  animation: finora-glyph-coin-float 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes finora-glyph-coin-out {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(1px, -1.5px);
+  }
+}
+
+.finora-glyph--animated .finora-glyph__coin-out {
+  animation: finora-glyph-coin-out 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* ------------------------------------------------------------
+   11. RESPONSIVE VÀ ANDROID MOBILE (320px - 520px)
+   ------------------------------------------------------------ */
+@media (max-width: 520px) {
+  .finora-notif-backdrop {
+    padding: 0;
+    align-items: flex-end; /* Bottom sheet chuẩn trải nghiệm app Android */
+  }
+
+  .finora-notif-sheet {
+    max-width: 100%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    max-height: 88vh;
+    max-height: 88dvh;
+    padding-bottom: env(safe-area-inset-bottom, 12px);
+  }
+
+  .finora-notif-header {
+    padding: 13px 16px 11px;
+  }
+
+  .finora-notif-header__title {
+    font-size: 1.05rem;
+  }
+
+  .finora-notif-btn-read-all {
+    padding: 5px 10px;
+    font-size: 0.72rem;
+  }
+
+  .finora-notif-tabs-wrap {
+    padding: 9px 14px 6px;
+  }
+
+  .finora-notif-body {
+    padding: 12px 14px 20px;
+    gap: 12px;
+  }
+
+  .finora-notif-card {
+    padding: 11px 12px;
+    gap: 10px;
+    border-radius: 16px;
+  }
+
+  .finora-notif-card__medallion {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+  }
+
+  .finora-notif-card__title {
+    font-size: 0.88rem;
+  }
+
+  .finora-notif-card__amount {
+    font-size: 0.96rem;
+  }
+
+  .finora-notif-card__desc {
+    font-size: 0.76rem;
+  }
+}
+
+/* Màn hình siêu nhỏ 320px - 360px */
+@media (max-width: 360px) {
+  .finora-notif-header {
+    padding: 11px 12px 9px;
+  }
+
+  .finora-notif-header__title {
+    font-size: 0.96rem;
+  }
+
+  .finora-notif-btn-read-all span {
+    display: none; /* Rút gọn trên màn hình siêu hẹp để tránh chen chúc */
+  }
+
+  .finora-notif-tab {
+    padding: 5px 9px;
+    font-size: 0.72rem;
+  }
+
+  .finora-notif-card {
+    padding: 9px 10px;
+    gap: 8px;
+  }
+
+  .finora-notif-card__medallion {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+
+  .finora-notif-card__amount {
+    font-size: 0.9rem;
+  }
+}
+
+/* ------------------------------------------------------------
+   12. HỖ TRỢ REDUCED MOTION (TIẾT KIỆM PIN & TRÁNH GIẢM FPS)
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .finora-notif-backdrop,
+  .finora-notif-sheet,
+  .finora-notif-detail-sheet,
+  .finora-notif-card,
+  .finora-notif-empty__svg,
+  .finora-notif-btn-close,
+  .finora-glyph__coin-float,
+  .finora-glyph__coin-out {
+    animation: none !important;
+    transition: none !important;
+  }
+}
