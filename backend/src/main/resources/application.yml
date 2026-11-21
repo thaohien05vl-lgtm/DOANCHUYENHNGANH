@@ -1,0 +1,59 @@
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never
+
+spring:
+  application:
+    name: finora-backend
+  datasource:
+    url: "${DB_URL:jdbc:sqlserver://localhost:1433;databaseName=FinoraDb;encrypt=true;trustServerCertificate=true}"
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:ChangeThis_StrongPassword!}
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+        format_sql: true
+        jdbc:
+          time_zone: Asia/Ho_Chi_Minh
+  servlet:
+    multipart:
+      max-file-size: 8MB
+      max-request-size: 10MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+app:
+  jwt:
+    # Thay bằng chuỗi bí mật riêng, tối thiểu 32 ký tự trong môi trường chạy thật.
+    secret: ${JWT_SECRET:Finora-Local-Development-Secret-Key-Change-Before-Deploy-2026}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  cors:
+    # Origin bổ sung, phân cách bằng dấu phẩy (localhost, mạng LAN và Capacitor đã được cho phép sẵn).
+    allowed-origin: ${FRONTEND_ORIGIN:http://localhost:5173}
+  oauth:
+    # Google OAuth Client ID loại "Web application" (cùng giá trị VITE_GOOGLE_CLIENT_ID ở frontend). Nhiều ID cách nhau bằng dấu phẩy.
+    google-client-ids: ${GOOGLE_CLIENT_IDS:}
+    # Facebook: dùng để xác minh token thật sự được cấp cho app của bạn (debug_token).
+    facebook-app-id: ${FACEBOOK_APP_ID:}
+    facebook-app-secret: ${FACEBOOK_APP_SECRET:}
+
+gemini:
+  api-key: ${GEMINI_API_KEY:}
+  model: ${GEMINI_MODEL:gemini-3.5-flash-lite}

@@ -1,0 +1,57 @@
+CHỨC NĂNG DỰ KIẾN LÀM TRONG ĐỒ ÁN CHUYÊN NGÀNH
+Tên đề tài: Ứng dụng quản lý chi tiêu cá nhân tích hợp AI (App_QLChiTieuCaNhan)
+1. Quản lý tài khoản người dùng
+•	Đăng ký, đăng nhập, đăng xuất và khôi phục mật khẩu.
+•	Cập nhật thông tin cá nhân và đổi mật khẩu.
+•	Quản lý dữ liệu thu chi riêng của từng người dùng.
+2. Quản lý thu nhập và chi tiêu
+•	Thêm, sửa, xóa các giao dịch thu nhập và chi tiêu.
+•	Quản lý danh mục thu chi và cho phép tạo danh mục cá nhân.
+•	Tìm kiếm, lọc giao dịch theo ngày, tháng, danh mục và nội dung.
+•	Xem lịch sử giao dịch và chi tiết từng giao dịch.
+•	Quản lý các khoản thu chi định kỳ.
+3. Dashboard tổng quan tài chính
+•	Hiển thị tổng thu nhập, tổng chi tiêu, số dư và số tiền còn lại.
+•	Hiển thị biểu đồ chi tiêu theo danh mục.
+•	Theo dõi tình hình tài chính theo tháng.
+•	Hiển thị cảnh báo ngân sách và tiến độ mục tiêu tiết kiệm.
+4. Quản lý ngân sách
+•	Thiết lập ngân sách tổng theo tháng.
+•	Thiết lập hạn mức chi tiêu cho từng danh mục.
+•	Theo dõi số tiền đã sử dụng và số tiền còn lại.
+•	Cảnh báo khi chi tiêu đạt các ngưỡng quy định hoặc vượt ngân sách.
+•	Thống kê các danh mục chi tiêu vượt hạn mức.
+5. Quản lý mục tiêu tiết kiệm
+•	Tạo mục tiêu tiết kiệm theo số tiền và thời hạn.
+•	Theo dõi số tiền đã tích lũy và phần trăm hoàn thành.
+•	Tính toán số tiền cần tiết kiệm mỗi tháng.
+•	Cập nhật tiến độ khi số tiền có thể dành dụm thay đổi.
+•	Đưa ra gợi ý điều chỉnh chi tiêu để hỗ trợ hoàn thành mục tiêu.
+6. Tích hợp AI nhận diện hóa đơn
+•	Cho phép chụp hoặc tải ảnh hóa đơn lên hệ thống.
+•	Sử dụng OCR/AI để nhận diện tên cửa hàng, ngày giao dịch, nội dung và tổng tiền.
+•	Tự động đề xuất danh mục chi tiêu phù hợp.
+•	Hiển thị kết quả để người dùng kiểm tra, chỉnh sửa và xác nhận.
+•	Lưu giao dịch sau khi người dùng xác nhận.
+•	Cập nhật ngân sách, thống kê và tiến độ tiết kiệm sau khi lưu giao dịch.
+7. Thống kê và báo cáo tài chính
+•	Thống kê thu nhập và chi tiêu theo tháng.
+•	Hiển thị biểu đồ tròn theo danh mục và biểu đồ cột so sánh các tháng.
+•	Xác định danh mục chi tiêu nhiều nhất.
+•	So sánh tình hình chi tiêu giữa tháng hiện tại và tháng trước.
+•	Hỗ trợ xuất báo cáo thu chi theo khoảng thời gian.
+8. Trợ lý AI phân tích chi tiêu
+•	Trả lời câu hỏi về tình hình thu chi của người dùng.
+•	Phân tích các danh mục chi tiêu nhiều nhất.
+•	Hỗ trợ kiểm tra tình trạng vượt ngân sách.
+•	Tính toán số tiền cần tiết kiệm theo mục tiêu và thời hạn.
+•	Đề xuất các khoản chi có thể điều chỉnh để cải thiện khả năng tiết kiệm.
+9. Các chức năng mở rộng dự kiến
+•	Quản lý nhiều ví tiền và nguồn tiền.
+•	Nhắc nhở các khoản thu chi định kỳ.
+•	Tùy chỉnh giao diện theo mùa, sự kiện và chế độ sáng/tối.
+•	Hỗ trợ giao diện tiếng Việt và tiếng Anh.
+•	Dự đoán chi tiêu cuối tháng dựa trên lịch sử giao dịch.
+•	Xuất dữ liệu giao dịch và báo cáo tài chính.
+Phạm vi thực hiện: Ưu tiên hoàn thiện các chức năng quản lý thu chi, ngân sách, mục tiêu tiết kiệm, thống kê báo cáo và AI nhận diện hóa đơn. Các chức năng mở rộng sẽ được cân nhắc triển khai theo thời gian và điều kiện kỹ thuật thực tế.
+
