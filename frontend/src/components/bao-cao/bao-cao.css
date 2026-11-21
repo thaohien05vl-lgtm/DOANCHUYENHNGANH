@@ -1,0 +1,672 @@
+/* ============================================================
+   FINORA REPORT & PDF ENGINE STYLESHEET
+   Quy chuẩn giao diện xem trước & In ấn tài liệu A4 chuyên nghiệp
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. KHUNG MODAL XEM TRƯỚC (PREVIEW MODAL SHELL)
+   ------------------------------------------------------------ */
+.modal-xem-truoc-bao-cao {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  background: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  overflow: hidden;
+  animation: fadeInReport 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInReport {
+  from { opacity: 0; transform: scale(0.99); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ------------------------------------------------------------
+   2. THANH CÔNG CỤ XEM TRƯỚC (REPORT TOOLBAR)
+   ------------------------------------------------------------ */
+.thanh-cong-cu-bao-cao {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--be-mat, #ffffff);
+  border-bottom: 1px solid var(--vien, #e2e8f0);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+  /* Safe area padding cho thiết bị di động / tai thỏ */
+  padding-top: max(10px, env(safe-area-inset-top));
+}
+
+.thanh-cong-cu-trai {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.thanh-cong-cu-tieu-de {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.thanh-cong-cu-tieu-de h2 {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--chu, #0f172a);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.thanh-cong-cu-tieu-de span {
+  font-size: 0.78rem;
+  color: var(--chu-phu, #64748b);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.thanh-cong-cu-giua {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--be-mat-2, #f1f5f9);
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--vien, #e2e8f0);
+}
+
+.thanh-cong-cu-phai {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Nút thanh công cụ */
+.nut-cong-cu {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--chu, #334155);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.nut-cong-cu:hover {
+  background: var(--be-mat, #ffffff);
+  border-color: var(--vien, #cbd5e1);
+  color: var(--ngoc, #14946f);
+}
+
+.nut-cong-cu.kich-hoat {
+  background: var(--ngoc, #14946f);
+  color: #ffffff;
+  border-color: var(--ngoc, #14946f);
+}
+
+.nut-cong-cu-icon {
+  width: 32px;
+  padding: 0;
+}
+
+.nhan-zoom {
+  font-size: 0.8rem;
+  font-weight: 700;
+  min-width: 44px;
+  text-align: center;
+  color: var(--chu, #0f172a);
+  font-variant-numeric: tabular-nums;
+}
+
+.nut-in-chinh {
+  background: var(--ngoc, #14946f) !important;
+  color: #ffffff !important;
+  border-color: var(--ngoc, #14946f) !important;
+  box-shadow: 0 2px 6px rgba(20, 148, 111, 0.25);
+}
+
+.nut-in-chinh:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.nut-luu-pdf {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.nut-luu-pdf:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.nut-dong-preview {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 8px;
+  color: var(--chu-phu, #64748b);
+}
+
+.nut-dong-preview:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* ------------------------------------------------------------
+   3. VÙNG XEM TRƯỚC TÀI LIỆU (VIEWPORT CONTAINER)
+   ------------------------------------------------------------ */
+.vung-xem-truoc-tai-lieu {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  background: #cbd5e1; /* Nền trung tính làm nổi bật trang giấy trắng */
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+[data-theme-mode='dark'] .vung-xem-truoc-tai-lieu {
+  background: #090f13; /* Nền tối sang trọng trên Dark Mode */
+}
+
+/* Khung cuộn chứa các trang A4 */
+.khung-chua-trang-a4 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  transform-origin: top center;
+  transition: transform 0.15s ease-out;
+  margin: 0 auto;
+}
+
+/* ------------------------------------------------------------
+   4. ĐỊNH DẠNG TỜ GIẤY CHUẨN A4 (STANDARD A4 PAPER SHEET)
+   Kích thước A4 chuẩn: 210mm x 297mm (tương đương 794px x 1123px ở 96 DPI)
+   ------------------------------------------------------------ */
+.trang-giay-a4 {
+  width: 794px;
+  min-height: 1123px;
+  padding: 48px 52px;
+  box-sizing: border-box;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-radius: 4px;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.18),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  page-break-after: always;
+  break-after: page;
+}
+
+.than-trang-a4 {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ------------------------------------------------------------
+   5. HEADER TÀI LIỆU BÁO CÁO (DOCUMENT HEADER)
+   ------------------------------------------------------------ */
+.dau-trang-bao-cao {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #2563eb;
+  position: relative;
+}
+
+.dau-trang-bao-cao::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 80px;
+  height: 2px;
+  background: #10b981;
+}
+
+.dau-trang-thuong-hieu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-finora-in {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0e2a2d 0%, #163a3e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(14, 42, 45, 0.2);
+}
+
+.ten-thuong-hieu-finora {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #0e2a2d;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.slogan-finora-in {
+  font-size: 0.72rem;
+  color: #64748b;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 2px 0 0;
+}
+
+.dau-trang-phai {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tieu-de-bao-cao-in {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.thong-tin-ky-in {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.thong-tin-nguoi-xuat-in {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* ------------------------------------------------------------
+   6. 5 THẺ SỐ LIỆU TỔNG QUAN (FINANCIAL KPIS GRID)
+   ------------------------------------------------------------ */
+.luoi-kpi-bao-cao-in {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 4px 0 8px;
+}
+
+.the-kpi-in {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.the-kpi-in .nhan-kpi-in {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.the-kpi-in .so-kpi-in {
+  font-size: 1.05rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+
+.the-kpi-in .chu-thich-kpi-in {
+  font-size: 0.68rem;
+  color: #94a3b8;
+}
+
+.the-kpi-in.thu .so-kpi-in { color: #059669; }
+.the-kpi-in.chi .so-kpi-in { color: #dc2626; }
+.the-kpi-in.thang-du .so-kpi-in { color: #059669; }
+.the-kpi-in.tham-hut .so-kpi-in { color: #dc2626; }
+.the-kpi-in.tiet-kiem .so-kpi-in { color: #2563eb; }
+
+/* ------------------------------------------------------------
+   7. KHỐI NHẬN ĐỊNH TÀI CHÍNH (FINANCIAL INSIGHTS & ADVICE)
+   ------------------------------------------------------------ */
+.khoi-nhan-dinh-in {
+  background: #f8fafc;
+  border-left: 4px solid #2563eb;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.khoi-nhan-dinh-in strong {
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.khoi-canh-bao-in {
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  border-radius: 0 8px 8px 0;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  color: #92400e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ------------------------------------------------------------
+   8. KHU VỰC BIỂU ĐỒ VECTOR CHẤT LƯỢNG CAO (VECTOR CHARTS)
+   ------------------------------------------------------------ */
+.khu-vuc-bieu-do-in {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 14px;
+  margin: 6px 0;
+}
+
+.hop-bieu-do-in {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hop-bieu-do-in h4 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hop-bieu-do-in svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ------------------------------------------------------------
+   9. BẢNG BIỂU TÀI LIỆU IN ẤN (REPORT TABLES)
+   ------------------------------------------------------------ */
+.khu-vuc-bang-in {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.tieu-de-phan-in {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 8px 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bang-tai-lieu-in {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.bang-tai-lieu-in thead th {
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 700;
+  padding: 7px 10px;
+  text-align: left;
+  border-bottom: 2px solid #cbd5e1;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.bang-tai-lieu-in tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.bang-tai-lieu-in tbody tr:nth-child(even) {
+  background: #fafbfd;
+}
+
+.bang-tai-lieu-in td {
+  padding: 6px 10px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.bang-tai-lieu-in td.so {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.bang-tai-lieu-in td.can-phai {
+  text-align: right;
+}
+
+.bang-tai-lieu-in td.can-giua {
+  text-align: center;
+}
+
+.bang-tai-lieu-in tfoot tr {
+  background: #f8fafc;
+  font-weight: 700;
+  border-top: 2px solid #cbd5e1;
+}
+
+/* ------------------------------------------------------------
+   10. CHÂN TRANG TÀI LIỆU (DOCUMENT FOOTER)
+   ------------------------------------------------------------ */
+.chan-trang-bao-cao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin-top: auto;
+}
+
+.chan-trang-trai {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chan-trang-phai {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.so-trang-badge {
+  font-weight: 700;
+  color: #475569;
+}
+
+/* ------------------------------------------------------------
+   11. QUY TẮC IN ẤN BẮT BUỘC (@MEDIA PRINT)
+   ------------------------------------------------------------ */
+@media print {
+  /* Ẩn toàn bộ giao diện app bên ngoài vùng in */
+  body, html {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  .thanh-ben,
+  .thanh-tren,
+  .thanh-duoi,
+  .toast-vung,
+  .khong-in,
+  .thanh-cong-cu-bao-cao,
+  .modal-xem-truoc-bao-cao::before,
+  .nut-dong-preview {
+    display: none !important;
+  }
+
+  /* Reset modal thành luồng in tự nhiên */
+  .modal-xem-truoc-bao-cao {
+    position: static !important;
+    inset: auto !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    overflow: visible !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .vung-xem-truoc-tai-lieu {
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  .khung-chua-trang-a4 {
+    transform: none !important;
+    gap: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .trang-giay-a4 {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: auto !important;
+    padding: 12mm 14mm !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border: none !important;
+    margin: 0 !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .trang-giay-a4:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* Chống xé hàng, xé bảng, xé card giữa 2 trang */
+  .khoi-nhan-dinh-in,
+  .the-kpi-in,
+  .hop-bieu-do-in,
+  .khu-vuc-bang-in,
+  .bang-tai-lieu-in tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+}
+
+/* ------------------------------------------------------------
+   12. MOBILE RESPONSIVE CHO PREVIEW
+   ------------------------------------------------------------ */
+@media (max-width: 640px) {
+  .thanh-cong-cu-bao-cao {
+    padding: 8px 10px;
+    gap: 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .thanh-cong-cu-tieu-de h2 {
+    font-size: 0.88rem;
+  }
+
+  .thanh-cong-cu-tieu-de span {
+    font-size: 0.72rem;
+  }
+
+  .thanh-cong-cu-giua {
+    gap: 4px;
+    padding: 2px 6px;
+  }
+
+  .nut-cong-cu {
+    height: 28px;
+    padding: 0 8px;
+    font-size: 0.76rem;
+  }
+
+  .nut-cong-cu-icon {
+    width: 28px;
+  }
+
+  .vung-xem-truoc-tai-lieu {
+    padding: 12px 6px;
+  }
+}

@@ -21,3 +21,4 @@ yarn-debug.log*
 Thumbs.db
 .idea/
 *.iml
+test-output/

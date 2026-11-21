@@ -20,9 +20,9 @@ import {
 import { BieuDoDanhMuc } from '../components/bieu-do/BieuDoDanhMuc'
 import { BieuDoThuChi } from '../components/bieu-do/BieuDoThuChi'
 import { ChartErrorBoundary } from '../components/chung/ChartErrorBoundary'
-import { Modal } from '../components/chung/Modal'
 import { TieuDeTrang } from '../components/chung/TieuDeTrang'
 import { TrangThaiTrong } from '../components/chung/TrangThaiTrong'
+import { XemTruocBaoCaoModal } from '../components/bao-cao/XemTruocBaoCaoModal'
 import { useDuLieu } from '../hooks/useDuLieu'
 import { useGiaoDien } from '../hooks/useGiaoDien'
 import { useXacThuc } from '../hooks/useXacThuc'
@@ -30,11 +30,12 @@ import { hoiTroLy } from '../services/troLyService'
 import {
   tinhTongHopBaoCao,
   type KyBaoCao,
+  type KetQuaBaoCaoChuanHoa,
 } from '../utils/baoCaoService'
 import { dinhDangNgay, dinhDangTien, homNayISO } from '../utils/dinhDang'
 import { xuatCsvDanhSachGiaoDich } from '../utils/xuatBaoCaoCsv'
 import { xuatExcelBaoCao, xuatExcelDanhSachGiaoDich } from '../utils/xuatBaoCaoExcel'
-import { maLocaleHienTai, t, dichTen } from '../utils/ngonNgu'
+import { t, dichTen } from '../utils/ngonNgu'
 
 export function BaoCao() {
   const { giaoDich, danhMuc, vi, nganSach } = useDuLieu()
@@ -51,6 +52,7 @@ export function BaoCao() {
 
   // Modal in ấn / PDF Preview
   const [moXemPdf, setMoXemPdf] = useState(false)
+  const [baoCaoXemPdf, setBaoCaoXemPdf] = useState<KetQuaBaoCaoChuanHoa | null>(null)
 
   // Phân tích Finora AI
   const [dangPhanTichAI, setDangPhanTichAI] = useState(false)
@@ -128,8 +130,38 @@ export function BaoCao() {
   // 2. Mở bản in / PDF báo cáo tài chính
   function xuLyMoPdfXuat() {
     if (!kiemTraNgayXuat()) return
+    const baoCaoXuat = tinhTongHopBaoCao(giaoDich, danhMuc, vi, nganSach, {
+      ky: 'tuy-chinh',
+      tuNgay: tuNgayXuat,
+      denNgay: denNgayXuat,
+      loaiGiaoDich,
+      locDanhMuc,
+      locVi,
+    })
+    setBaoCaoXemPdf(baoCaoXuat)
     setMoXemPdf(true)
   }
+
+  // Mở bản in / PDF cho cấu hình bộ lọc hiện tại trên dashboard
+  function xuLyMoPdfHienTai() {
+    setBaoCaoXemPdf(baoCao)
+    setMoXemPdf(true)
+  }
+
+  // Tiêu đề báo cáo động phản ánh đúng bộ lọc thực tế
+  const tieuDeBaoCaoHienTai = useMemo(() => {
+    if (locDanhMuc) {
+      const dm = danhMuc.find((d) => d.id === locDanhMuc)
+      return `${t('BÁO CÁO CHI TIÊU - DANH MỤC:')} ${dm?.ten ? dichTen(dm.ten).toUpperCase() : ''}`
+    }
+    if (loaiGiaoDich === 'thu') return t('BÁO CÁO THU NHẬP')
+    if (loaiGiaoDich === 'chi') return t('BÁO CÁO CHI TIÊU')
+    if (ky === 'nam-nay') return t('BÁO CÁO TÀI CHÍNH THEO NĂM')
+    if (ky === 'thang-nay') return t('BÁO CÁO TÀI CHÍNH THEO THÁNG')
+    if (ky === '7-ngay') return t('BÁO CÁO TÀI CHÍNH 7 NGÀY GẦN ĐÂY')
+    if (ky === 'hom-nay') return t('BÁO CÁO TÀI CHÍNH HÔM NAY')
+    return t('BÁO CÁO PHÂN TÍCH TÀI CHÍNH CÁ NHÂN')
+  }, [locDanhMuc, loaiGiaoDich, ky, danhMuc])
 
   // 3. Xuất dữ liệu bảng kê chi tiết dạng CSV (Chuẩn UTF-8 with BOM)
   function xuLyXuatGiaoDichCsv() {
@@ -231,7 +263,18 @@ export function BaoCao() {
         moTa={t('Tổng hợp doanh thu, chi tiêu, dòng tiền thặng dư và cơ cấu ngân sách.')}
         coNutQuayVe
         duongDanQuayVe="/ca-nhan"
-      />
+      >
+        <button
+          type="button"
+          className="btn btn-nhe btn-sm"
+          onClick={xuLyMoPdfHienTai}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.82rem' }}
+          title={t('Xem trước & In báo cáo chuẩn A4')}
+        >
+          <Printer size={15} />
+          <span>{t('Xem & In PDF')}</span>
+        </button>
+      </TieuDeTrang>
 
       {/* ============================================================
           KHU VỰC B: BỘ LỌC BÁO CÁO (RESPONSIVE KHÔNG TRÀN MÀN HÌNH)
@@ -981,185 +1024,18 @@ export function BaoCao() {
       </section>
 
       {/* ============================================================
-          MODAL XEM TRƯỚC VÀ IN BÁO CÁO PDF (BẢN IN CHUẨN A4)
+          MODAL XEM TRƯỚC VÀ XUẤT BÁO CÁO PDF CHUẨN A4 CHUYÊN NGHIỆP
           ============================================================ */}
-      <Modal mo={moXemPdf} dong={() => setMoXemPdf(false)} tieuDe={t('Xem trước & In báo cáo PDF')}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
-            <div>
-              <strong style={{ fontSize: '1.02rem', display: 'block' }}>{t('Bản in chuẩn khổ A4 - Finora')}</strong>
-              <small className="mo">{t('Trình duyệt sẽ mở hộp thoại in / Lưu dưới dạng PDF (Save as PDF).')}</small>
-            </div>
-            <button
-              type="button"
-              className="btn btn-chinh"
-              onClick={() => {
-                window.print()
-              }}
-            >
-              <Printer size={16} /> {t('Bắt đầu in / Lưu PDF')}
-            </button>
-          </div>
-
-          {/* VÙNG TÀI LIỆU IN ẤN */}
-          <div
-            id="vung-in-bao-cao"
-            style={{
-              padding: 24,
-              background: 'var(--be-mat, #fff)',
-              border: '1px solid var(--vien, #cbd5e1)',
-              borderRadius: 12,
-              maxHeight: '65vh',
-              overflowY: 'auto',
-              fontFamily: 'inherit',
-            }}
-          >
-            {/* Header bản in */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #2563eb', paddingBottom: 12 }}>
-              <div>
-                <h1 style={{ margin: 0, fontSize: '1.35rem', color: '#2563eb' }}>{t('FINORA FINANCIAL REPORT')}</h1>
-                <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: '#64748b' }}>{t('Báo cáo phân tích tài chính cá nhân')}</p>
-              </div>
-              <div style={{ textAlign: 'right', fontSize: '0.82rem', color: '#334155' }}>
-                <div><strong>{t('Kỳ báo cáo:')}</strong> {baoCao.tieuDeKy}</div>
-                <div><strong>{t('Người xuất:')}</strong> {nguoiDung?.ten || t('Chủ tài khoản')} ({nguoiDung?.email || '—'})</div>
-                <div><strong>{t('Thời gian xuất:')}</strong> {new Date().toLocaleString(maLocaleHienTai)}</div>
-              </div>
-            </div>
-
-            {/* Bảng 5 KPIs tổng quan bản in */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, margin: '16px 0' }}>
-              <div style={{ padding: 10, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.78rem', color: '#64748b' }}>{t('Tổng thu')}</span>
-                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#10b981', marginTop: 4 }}>
-                  {dinhDangTien(baoCao.tongThu)}
-                </div>
-              </div>
-              <div style={{ padding: 10, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.78rem', color: '#64748b' }}>{t('Tổng chi')}</span>
-                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#ef4444', marginTop: 4 }}>
-                  {dinhDangTien(baoCao.tongChi)}
-                </div>
-              </div>
-              <div style={{ padding: 10, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.78rem', color: '#64748b' }}>{t('Chênh lệch')}</span>
-                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: baoCao.chenhLech >= 0 ? '#10b981' : '#ef4444', marginTop: 4 }}>
-                  {baoCao.chenhLech >= 0 ? '+' : ''}{dinhDangTien(baoCao.chenhLech)}
-                </div>
-              </div>
-              <div style={{ padding: 10, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.78rem', color: '#64748b' }}>{t('Tiền giữ lại')}</span>
-                <div style={{ fontSize: '1.05rem', fontWeight: 700, marginTop: 4 }}>
-                  {baoCao.tienGiuLai >= 0 ? '+' : ''}{dinhDangTien(baoCao.tienGiuLai)}
-                </div>
-              </div>
-              <div style={{ padding: 10, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.78rem', color: '#64748b' }}>{t('Tỷ lệ tiết kiệm')}</span>
-                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: baoCao.tiLeTietKiem >= 20 ? '#10b981' : '#d97706', marginTop: 4 }}>
-                  {baoCao.tiLeTietKiemHienThi}
-                </div>
-              </div>
-            </div>
-
-            {/* Nhận xét in ấn */}
-            <div style={{ padding: '10px 14px', background: '#f1f5f9', borderRadius: 8, marginBottom: 16, fontSize: '0.84rem' }}>
-              <strong>{t('Đánh giá tài chính:')}</strong> {baoCao.nhanXetTongQuan}
-            </div>
-
-            {/* Bảng cơ cấu chi tiêu */}
-            <h3 style={{ fontSize: '0.96rem', margin: '14px 0 6px', color: '#1e293b' }}>{t('1. Cơ cấu chi tiêu theo danh mục')}</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem', marginBottom: 16 }}>
-              <thead>
-                <tr style={{ background: '#f1f5f9', borderBottom: '1px solid #cbd5e1' }}>
-                  <th style={{ padding: '6px 8px', textAlign: 'left' }}>{t('Danh mục')}</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'center' }}>{t('Số lượt')}</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'right' }}>{t('Số tiền (VND)')}</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'right' }}>{t('Tỷ trọng %')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {baoCao.coCauChi.map((d) => (
-                  <tr key={d.danhMuc.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '6px 8px' }}>{dichTen(d.danhMuc.ten)}</td>
-                    <td style={{ padding: '6px 8px', textAlign: 'center' }}>{d.soLuong}</td>
-                    <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 600 }}>{dinhDangTien(d.soTien)}</td>
-                    <td style={{ padding: '6px 8px', textAlign: 'right' }}>{d.tyTrong}%</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {/* Bảng thu chi theo tháng */}
-            <h3 style={{ fontSize: '0.96rem', margin: '14px 0 6px', color: '#1e293b' }}>{t('2. Biến động thu chi và tiền giữ lại qua các tháng')}</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem', marginBottom: 16 }}>
-              <thead>
-                <tr style={{ background: '#f1f5f9', borderBottom: '1px solid #cbd5e1' }}>
-                  <th style={{ padding: '6px 8px', textAlign: 'left' }}>{t('Tháng')}</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'right' }}>{t('Thu nhập')}</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'right' }}>{t('Chi tiêu')}</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'right' }}>{t('Tiền giữ lại')}</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'center' }}>{t('Trạng thái')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {baoCao.chuoiThang.map((m) => (
-                  <tr key={m.thang} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '6px 8px' }}>{m.nhan}</td>
-                    <td style={{ padding: '6px 8px', textAlign: 'right', color: '#10b981' }}>{dinhDangTien(m.thu)}</td>
-                    <td style={{ padding: '6px 8px', textAlign: 'right', color: '#ef4444' }}>{dinhDangTien(m.chi)}</td>
-                    <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 700 }}>
-                      {m.tienGiuLai > 0 ? '+' : ''}{dinhDangTien(m.tienGiuLai)}
-                    </td>
-                    <td style={{ padding: '6px 8px', textAlign: 'center' }}>
-                      {m.tienGiuLai > 0 ? t('Thặng dư') : m.tienGiuLai < 0 ? t('Thâm hụt') : t('Hòa vốn')}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {/* Bảng kê chi tiết giao dịch */}
-            <h3 style={{ fontSize: '0.96rem', margin: '14px 0 6px', color: '#1e293b' }}>
-              {t('3. Bảng kê giao dịch ({0} bản ghi)', [baoCao.soLuongGiaoDich])}
-            </h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
-              <thead>
-                <tr style={{ background: '#f1f5f9', borderBottom: '1px solid #cbd5e1' }}>
-                  <th style={{ padding: '6px 8px', width: 35, textAlign: 'left' }}>{t('STT')}</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'left' }}>{t('Ngày')}</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'left' }}>{t('Loại')}</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'left' }}>{t('Danh mục')}</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'left' }}>{t('Ghi chú')}</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'right' }}>{t('Số tiền (VND)')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {baoCao.giaoDichTrongKy.slice(0, 100).map((g, i) => {
-                  const dm = danhMuc.find((d) => d.id === g.maDanhMuc)
-                  const laChi = g.loai === 'chi'
-                  return (
-                    <tr key={g.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '6px 8px' }}>{i + 1}</td>
-                      <td style={{ padding: '6px 8px', whiteSpace: 'nowrap' }}>{g.ngay ? dinhDangNgay(g.ngay) : '—'}</td>
-                      <td style={{ padding: '6px 8px' }}>{laChi ? t('Chi') : t('Thu')}</td>
-                      <td style={{ padding: '6px 8px' }}>{dm?.ten || '—'}</td>
-                      <td style={{ padding: '6px 8px' }}>{g.ghiChu || '—'}</td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 600, color: laChi ? '#ef4444' : '#10b981' }}>
-                        {laChi ? '-' : '+'}{dinhDangTien(g.soTien)}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 20, paddingTop: 12, borderTop: '1px solid #e2e8f0', fontSize: '0.78rem', color: '#94a3b8' }}>
-              <span>{t('Trích xuất từ Finora Personal Finance')}</span>
-              <span>{t('Bản quyền © Finora')}</span>
-            </div>
-          </div>
-        </div>
-      </Modal>
+      <XemTruocBaoCaoModal
+        mo={moXemPdf}
+        dong={() => setMoXemPdf(false)}
+        baoCao={baoCaoXemPdf || baoCao}
+        danhMuc={danhMuc}
+        vi={vi}
+        tenNguoiDung={nguoiDung?.ten}
+        emailNguoiDung={nguoiDung?.email}
+        tieuDeBaoCao={tieuDeBaoCaoHienTai}
+      />
     </div>
   )
 }
