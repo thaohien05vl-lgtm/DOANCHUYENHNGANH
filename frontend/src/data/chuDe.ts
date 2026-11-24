@@ -15,8 +15,16 @@ export type ThemeId =
   | 'thu'
   | 'troi'
   | 'thach-anh'
+  | 'xuan-sang'
+  | 'xuan-toi'
+  | 'ha-sang'
+  | 'ha-toi'
+  | 'thu-sang'
+  | 'thu-toi'
+  | 'dong-sang'
+  | 'dong-toi'
 
-export type NhomChuDe = 'tat-ca' | 'de-xuat' | 'yeu-thich' | 'toi-gian' | 'cao-cap'
+export type NhomChuDe = 'tat-ca' | 'de-xuat' | 'yeu-thich' | 'toi-gian' | 'cao-cap' | 'theo-mua'
 
 export interface ChuDe {
   id: ThemeId
@@ -28,7 +36,7 @@ export interface ChuDe {
   mauChinh: string
   mauNen: string
   mauThe: string
-  nhom: ('de-xuat' | 'toi-gian' | 'cao-cap')[]
+  nhom: ('de-xuat' | 'toi-gian' | 'cao-cap' | 'theo-mua')[]
 }
 
 export const DANH_SACH_CHU_DE: ChuDe[] = [
@@ -211,6 +219,103 @@ export const DANH_SACH_CHU_DE: ChuDe[] = [
     mauNen: '#191624',
     mauThe: '#252035',
     nhom: ['cao-cap'],
+  },
+  /* ==================== BỘ SƯU TẬP BỐN MÙA (FOUR SEASONS) ==================== */
+  {
+    id: 'xuan-sang',
+    ten: t('Xuân Sáng'),
+    tenTiengAnh: t('Spring Blossom (Light)'),
+    moTa: t('Hoa đào anh đào hồng phấn, xanh lá non dịu mát đón chào xuân mới'),
+    cheDo: 'sang',
+    mau: ['#fcf1f4', '#b85272', '#d9e8dc'],
+    mauChinh: '#b85272',
+    mauNen: '#fcf1f4',
+    mauThe: '#ffffff',
+    nhom: ['theo-mua', 'cao-cap'],
+  },
+  {
+    id: 'xuan-toi',
+    ten: t('Xuân Tối'),
+    tenTiengAnh: t('Spring Night (Dark)'),
+    moTa: t('Hoa anh đào nở trong đêm xuân, sắc hồng dịu trên nền than ấm'),
+    cheDo: 'toi',
+    mau: ['#1c1418', '#c2708b', '#2c3a30'],
+    mauChinh: '#c2708b',
+    mauNen: '#1c1418',
+    mauThe: '#271c22',
+    nhom: ['theo-mua', 'cao-cap'],
+  },
+  {
+    id: 'ha-sang',
+    ten: t('Hạ Sáng'),
+    tenTiengAnh: t('Summer Breeze (Light)'),
+    moTa: t('Biển ngọc trong vắt và nắng vàng cát nhạt, tươi mát và tràn đầy năng lượng'),
+    cheDo: 'sang',
+    mau: ['#f0f8f8', '#267d8a', '#edd9aa'],
+    mauChinh: '#267d8a',
+    mauNen: '#f0f8f8',
+    mauThe: '#ffffff',
+    nhom: ['theo-mua', 'de-xuat'],
+  },
+  {
+    id: 'ha-toi',
+    ten: t('Hạ Tối'),
+    tenTiengAnh: t('Summer Deep (Dark)'),
+    moTa: t('Biển đêm sâu thẳm tĩnh mịch, ngọc lam dịu nhẹ và ánh trăng biển'),
+    cheDo: 'toi',
+    mau: ['#0f1a1e', '#4ca5b3', '#3d3420'],
+    mauChinh: '#4ca5b3',
+    mauNen: '#0f1a1e',
+    mauThe: '#16242a',
+    nhom: ['theo-mua', 'cao-cap'],
+  },
+  {
+    id: 'thu-sang',
+    ten: t('Thu Sáng'),
+    tenTiengAnh: t('Autumn Warmth (Light)'),
+    moTa: t('Lá vàng rơi, cam đất nâu ấm và vàng mù tạt cổ điển nồng nàn'),
+    cheDo: 'sang',
+    mau: ['#fcf6ee', '#96562c', '#ebd097'],
+    mauChinh: '#96562c',
+    mauNen: '#fcf6ee',
+    mauThe: '#ffffff',
+    nhom: ['theo-mua', 'toi-gian'],
+  },
+  {
+    id: 'thu-toi',
+    ten: t('Thu Tối'),
+    tenTiengAnh: t('Autumn Dusk (Dark)'),
+    moTa: t('Rừng thu chạng vạng, ấm cúng ánh lửa và sắc lá phong khô'),
+    cheDo: 'toi',
+    mau: ['#1b1511', '#be7b4e', '#3c301c'],
+    mauChinh: '#be7b4e',
+    mauNen: '#1b1511',
+    mauThe: '#251c16',
+    nhom: ['theo-mua', 'toi-gian'],
+  },
+  {
+    id: 'dong-sang',
+    ten: t('Đông Sáng'),
+    tenTiengAnh: t('Winter Frost (Light)'),
+    moTa: t('Tuyết trắng đầu mùa, lam xám băng sương và ánh bạc thanh nhã'),
+    cheDo: 'sang',
+    mau: ['#f2f5f8', '#4a6880', '#d8e1e8'],
+    mauChinh: '#4a6880',
+    mauNen: '#f2f5f8',
+    mauThe: '#ffffff',
+    nhom: ['theo-mua', 'toi-gian'],
+  },
+  {
+    id: 'dong-toi',
+    ten: t('Đông Tối'),
+    tenTiengAnh: t('Winter Night (Dark)'),
+    moTa: t('Bầu trời đêm đông băng giá, ánh sao bắc cực và bông tuyết bạc dịu'),
+    cheDo: 'toi',
+    mau: ['#11161d', '#7293af', '#2a3542'],
+    mauChinh: '#7293af',
+    mauNen: '#11161d',
+    mauThe: '#19202a',
+    nhom: ['theo-mua', 'cao-cap'],
   },
 ]
 

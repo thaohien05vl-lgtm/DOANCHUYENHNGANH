@@ -1230,6 +1230,56 @@ html[data-theme-motion='false'] .hoa-tiet-chu-de * {
   --bong: 0 2px 5px rgb(0 0 0 / .3), 0 12px 28px -18px rgb(0 0 0 / .65); --bong-lon: 0 24px 60px -24px rgb(0 0 0 / .68);
 }
 
+/* ==================== BỘ BIẾN MÀU BỐN MÙA (FOUR SEASONS) ==================== */
+[data-theme='xuan-sang'] {
+  --nen: #fcf1f4; --be-mat: #ffffff; --be-mat-2: #fae8ee; --vien: #edd1dc; --chu: #311c25; --chu-phu: #7c5c6a; --chu-mo: #ab8e9b;
+  --muc: #692a3f; --muc-2: #8a3c56; --ngoc: #b85272; --ngoc-dam: #963d59; --ngoc-nhat: #fae5ec; --san-ho: #c75a45; --san-ho-nhat: #f9e8e4; --vang: #b58832; --vang-nhat: #f6edd7; --xanh: #5a8a6f;
+  --bong: 0 2px 4px rgb(80 30 50 / .05), 0 12px 28px -18px rgb(80 30 50 / .15); --bong-lon: 0 24px 60px -24px rgb(80 30 50 / .25);
+  --bg: var(--nen); --surface: var(--be-mat); --text: var(--chu); --muted: var(--chu-phu); --primary: var(--ngoc); --accent: var(--muc-2); --border: var(--vien); --success: #5a8a6f; --warning: var(--vang); --danger: var(--san-ho);
+}
+[data-theme='xuan-toi'] {
+  --nen: #1c1418; --be-mat: #271c22; --be-mat-2: #30242b; --vien: #46343f; --chu: #ededed; --chu-phu: #bda6b2; --chu-mo: #8e7883;
+  --muc: #442232; --muc-2: #5b2f44; --ngoc: #c2708b; --ngoc-dam: #aa5b74; --ngoc-nhat: #3c2430; --san-ho: #d96f5b; --san-ho-nhat: #442621; --vang: #cca252; --vang-nhat: #443721; --xanh: #6d967f;
+  --bong: 0 2px 5px rgb(0 0 0 / .3), 0 12px 28px -18px rgb(0 0 0 / .65); --bong-lon: 0 24px 60px -24px rgb(0 0 0 / .68);
+  --bg: var(--nen); --surface: var(--be-mat); --text: var(--chu); --muted: var(--chu-phu); --primary: var(--ngoc); --accent: var(--muc-2); --border: var(--vien); --success: #6d967f; --warning: var(--vang); --danger: var(--san-ho);
+}
+[data-theme='ha-sang'] {
+  --nen: #f0f8f8; --be-mat: #ffffff; --be-mat-2: #e4f2f2; --vien: #cfe4e4; --chu: #14282c; --chu-phu: #557277; --chu-mo: #84a1a5;
+  --muc: #144951; --muc-2: #1c616b; --ngoc: #267d8a; --ngoc-dam: #1c616b; --ngoc-nhat: #e0f2f3; --san-ho: #c95d48; --san-ho-nhat: #faeae6; --vang: #bd8e32; --vang-nhat: #f7eed7; --xanh: #3b82a6;
+  --bong: 0 2px 4px rgb(20 73 81 / .05), 0 12px 28px -18px rgb(20 73 81 / .15); --bong-lon: 0 24px 60px -24px rgb(20 73 81 / .25);
+  --bg: var(--nen); --surface: var(--be-mat); --text: var(--chu); --muted: var(--chu-phu); --primary: var(--ngoc); --accent: var(--muc-2); --border: var(--vien); --success: var(--ngoc); --warning: var(--vang); --danger: var(--san-ho);
+}
+[data-theme='ha-toi'] {
+  --nen: #0f1a1e; --be-mat: #16242a; --be-mat-2: #1e3037; --vien: #2c444d; --chu: #ededed; --chu-phu: #9cb5bd; --chu-mo: #728c94;
+  --muc: #14353e; --muc-2: #1c4a56; --ngoc: #4ca5b3; --ngoc-dam: #398c99; --ngoc-nhat: #1c3d44; --san-ho: #d97262; --san-ho-nhat: #442723; --vang: #caa452; --vang-nhat: #423821; --xanh: #5b9dbf;
+  --bong: 0 2px 5px rgb(0 0 0 / .3), 0 12px 28px -18px rgb(0 0 0 / .65); --bong-lon: 0 24px 60px -24px rgb(0 0 0 / .68);
+  --bg: var(--nen); --surface: var(--be-mat); --text: var(--chu); --muted: var(--chu-phu); --primary: var(--ngoc); --accent: var(--muc-2); --border: var(--vien); --success: var(--ngoc); --warning: var(--vang); --danger: var(--san-ho);
+}
+[data-theme='thu-sang'] {
+  --nen: #fcf6ee; --be-mat: #ffffff; --be-mat-2: #f6ecdc; --vien: #e8dac5; --chu: #2f2116; --chu-phu: #7a614e; --chu-mo: #a8907d;
+  --muc: #5a3013; --muc-2: #763f1a; --ngoc: #96562c; --ngoc-dam: #7a421e; --ngoc-nhat: #f6e6da; --san-ho: #be5942; --san-ho-nhat: #faeae5; --vang: #be8a29; --vang-nhat: #f8eed5; --xanh: #547c94;
+  --bong: 0 2px 4px rgb(90 48 19 / .05), 0 12px 28px -18px rgb(90 48 19 / .15); --bong-lon: 0 24px 60px -24px rgb(90 48 19 / .25);
+  --bg: var(--nen); --surface: var(--be-mat); --text: var(--chu); --muted: var(--chu-phu); --primary: var(--ngoc); --accent: var(--muc-2); --border: var(--vien); --success: #558759; --warning: var(--vang); --danger: var(--san-ho);
+}
+[data-theme='thu-toi'] {
+  --nen: #1b1511; --be-mat: #251c16; --be-mat-2: #30251e; --vien: #44352b; --chu: #ededed; --chu-phu: #baa79a; --chu-mo: #8c786a;
+  --muc: #3d2414; --muc-2: #54321c; --ngoc: #be7b4e; --ngoc-dam: #a3643b; --ngoc-nhat: #3c291d; --san-ho: #d66c56; --san-ho-nhat: #44251f; --vang: #cfa14e; --vang-nhat: #443720; --xanh: #6892aa;
+  --bong: 0 2px 5px rgb(0 0 0 / .3), 0 12px 28px -18px rgb(0 0 0 / .65); --bong-lon: 0 24px 60px -24px rgb(0 0 0 / .68);
+  --bg: var(--nen); --surface: var(--be-mat); --text: var(--chu); --muted: var(--chu-phu); --primary: var(--ngoc); --accent: var(--muc-2); --border: var(--vien); --success: #67966a; --warning: var(--vang); --danger: var(--san-ho);
+}
+[data-theme='dong-sang'] {
+  --nen: #f2f5f8; --be-mat: #ffffff; --be-mat-2: #e7edf3; --vien: #d2dce6; --chu: #1a2530; --chu-phu: #5c6c7d; --chu-mo: #8c9baa;
+  --muc: #23394c; --muc-2: #334f66; --ngoc: #4a6880; --ngoc-dam: #395267; --ngoc-nhat: #e4edf5; --san-ho: #c45749; --san-ho-nhat: #f9e9e7; --vang: #b58d34; --vang-nhat: #f6eed7; --xanh: #4a779d;
+  --bong: 0 2px 4px rgb(35 57 76 / .05), 0 12px 28px -18px rgb(35 57 76 / .15); --bong-lon: 0 24px 60px -24px rgb(35 57 76 / .25);
+  --bg: var(--nen); --surface: var(--be-mat); --text: var(--chu); --muted: var(--chu-phu); --primary: var(--ngoc); --accent: var(--muc-2); --border: var(--vien); --success: #498263; --warning: var(--vang); --danger: var(--san-ho);
+}
+[data-theme='dong-toi'] {
+  --nen: #11161d; --be-mat: #19202a; --be-mat-2: #212a36; --vien: #313e4f; --chu: #ededed; --chu-phu: #a4b3c3; --chu-mo: #768798;
+  --muc: #1a2c3d; --muc-2: #253d53; --ngoc: #7293af; --ngoc-dam: #5b7b96; --ngoc-nhat: #213344; --san-ho: #d66f64; --san-ho-nhat: #442624; --vang: #c9a456; --vang-nhat: #423822; --xanh: #5b8db8;
+  --bong: 0 2px 5px rgb(0 0 0 / .3), 0 12px 28px -18px rgb(0 0 0 / .65); --bong-lon: 0 24px 60px -24px rgb(0 0 0 / .68);
+  --bg: var(--nen); --surface: var(--be-mat); --text: var(--chu); --muted: var(--chu-phu); --primary: var(--ngoc); --accent: var(--muc-2); --border: var(--vien); --success: #5f9976; --warning: var(--vang); --danger: var(--san-ho);
+}
+
 /* Chế độ riêng tư: che số tiền có class .so trên toàn ứng dụng. */
 html[data-hide-money='true'] .so { filter: blur(8px); user-select: none; transition: filter .18s ease; }
 html[data-hide-money='true'] canvas, html[data-hide-money='true'] .nhip-dai { filter: blur(7px); }

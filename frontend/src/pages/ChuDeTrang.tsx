@@ -33,7 +33,7 @@ export function ChuDeTrang() {
     return DANH_SACH_CHU_DE.filter((c) => {
       if (nhomLoc === 'tat-ca') return true
       if (nhomLoc === 'yeu-thich') return danhSachYeuThich.includes(c.id)
-      return c.nhom.includes(nhomLoc as 'de-xuat' | 'toi-gian' | 'cao-cap')
+      return c.nhom.includes(nhomLoc as 'de-xuat' | 'toi-gian' | 'cao-cap' | 'theo-mua')
     })
   }, [nhomLoc, danhSachYeuThich])
 
@@ -211,6 +211,7 @@ export function ChuDeTrang() {
             ['yeu-thich', t('Yêu thích ({0})', [danhSachYeuThich.length])],
             ['toi-gian', t('Tối giản')],
             ['cao-cap', t('Cao cấp')],
+            ['theo-mua', t('Theo mùa')],
             ['tat-ca', t('Tất cả ({0})', [DANH_SACH_CHU_DE.length])],
           ] as const
         ).map(([id, label]) => {
@@ -278,6 +279,30 @@ export function ChuDeTrang() {
                 {/* SVG Họa tiết riêng của từng chủ đề */}
                 <HoaTietChuDe themeId={item.id} mini />
 
+                {/* Huy hiệu dấu tick khi chủ đề đang dùng (chuẩn thiết kế Finora) */}
+                {laThemeHienTai && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 10,
+                      left: 10,
+                      width: 22,
+                      height: 22,
+                      borderRadius: '50%',
+                      background: item.mauChinh,
+                      color: '#ffffff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      zIndex: 3,
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                    }}
+                    aria-label={t('Đang dùng')}
+                  >
+                    <Check size={12} strokeWidth={3} />
+                  </div>
+                )}
+
                 {/* Mini Balance Card */}
                 <div
                   style={{
@@ -338,9 +363,9 @@ export function ChuDeTrang() {
               </div>
 
               {/* TÊN CHỦ ĐỀ & TRẠNG THÁI */}
-              <div style={{ padding: '0 2px' }}>
-                <b className="chu-de-ten">{item.ten}</b>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+              <div style={{ padding: '0 2px', minWidth: 0 }}>
+                <b className="chu-de-ten" title={item.ten}>{item.ten}</b>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, minWidth: 0 }}>
                   {laThemeHienTai ? (
                     <span
                       style={{
@@ -350,14 +375,24 @@ export function ChuDeTrang() {
                         fontSize: '0.74rem',
                         fontWeight: 700,
                         color: 'var(--ngoc)',
+                        whiteSpace: 'nowrap',
                       }}
                     >
                       <Check size={13} strokeWidth={3} />
                       {themeXemThu === item.id ? t('Đang xem thử') : t('Đang dùng')}
                     </span>
                   ) : (
-                    <small className="mo" style={{ fontSize: '0.73rem' }}>
-                      {item.cheDo === 'toi' ? t('Tối') : t('Sáng')} · {item.nhom.includes('cao-cap') ? t('Cao cấp') : t('Tối giản')}
+                    <small
+                      className="mo"
+                      style={{
+                        fontSize: '0.73rem',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: 'block',
+                      }}
+                    >
+                      {item.cheDo === 'toi' ? t('Tối') : t('Sáng')} · {item.nhom.includes('theo-mua') ? t('Theo mùa') : item.nhom.includes('cao-cap') ? t('Cao cấp') : t('Tối giản')}
                     </small>
                   )}
                 </div>

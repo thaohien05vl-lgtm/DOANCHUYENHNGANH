@@ -1,0 +1,523 @@
+/* ==========================================================================
+   FINORA - GIAO DIỆN QUẢN LÝ NGÂN SÁCH (NGAN SACH)
+   - Tối ưu Mobile-First (320px, 360px, 390px, 768px)
+   - Chống tràn chữ, số co giãn linh hoạt bằng clamp()
+   - Bo góc mềm mại, card nổi nhẹ chuẩn ngôn ngữ thiết kế Finora
+   ========================================================================== */
+
+.ns-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  padding-bottom: 96px; /* Chừa khoảng trống cho FAB và thanh tab dưới */
+}
+
+/* Header thu gọn */
+.ns-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.ns-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.ns-header-title {
+  margin: 0;
+  font-size: clamp(1.2rem, 4vw, 1.45rem);
+  font-weight: 700;
+  color: var(--chu);
+  white-space: nowrap;
+}
+
+.ns-header-desc {
+  margin: 2px 0 0 0;
+  font-size: 0.85rem;
+  color: var(--chu-phu);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Thanh điều hướng tháng */
+.ns-month-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.ns-month-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--be-mat);
+  border: 1px solid var(--vien);
+  border-radius: 14px;
+  padding: 4px 6px;
+  box-shadow: var(--bong-nhe);
+}
+
+.ns-month-label {
+  min-width: 110px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--chu);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+
+.ns-month-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ns-btn-today {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--vien);
+  background: var(--be-mat);
+  color: var(--mau-chinh);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ns-btn-today:active {
+  transform: scale(0.96);
+}
+
+.ns-btn-copy {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: 1px dashed var(--mau-chinh);
+  background: var(--be-mat-phu, rgba(47, 111, 219, 0.06));
+  color: var(--mau-chinh);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Thẻ tổng quan ngân sách */
+.ns-overview-card {
+  background: var(--be-mat);
+  border: 1px solid var(--vien);
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow: var(--bong);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.ns-overview-circle {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ns-overview-metrics {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ns-metric-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  border-bottom: 1px dashed var(--vien);
+  padding-bottom: 4px;
+}
+
+.ns-metric-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ns-metric-label {
+  font-size: 0.8rem;
+  color: var(--chu-phu);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ns-metric-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: clamp(0.95rem, 3.4vw, 1.18rem);
+}
+
+.ns-metric-value.xanh {
+  color: var(--ngoc, #14946f);
+}
+
+.ns-metric-value.vang {
+  color: var(--vang, #d97706);
+}
+
+.ns-metric-value.do {
+  color: var(--san-ho, #ef4444);
+}
+
+/* Container danh sách ngân sách có hiệu ứng trượt */
+.ns-list-container {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  animation: nsSlideFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes nsSlideFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Thẻ từng ngân sách */
+.ns-card {
+  background: var(--be-mat);
+  border: 1px solid var(--vien);
+  border-radius: 18px;
+  padding: 16px 18px;
+  box-shadow: var(--bong-nhe);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ns-card:hover {
+  box-shadow: var(--bong);
+}
+
+/* Hàng 1: Icon danh mục + Tên (truncate) + Badge trạng thái + Nút ba chấm */
+.ns-card-row1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  width: 100%;
+}
+
+.ns-card-category {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ns-card-cat-name {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--chu);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ns-card-cat-limit {
+  font-size: 0.76rem;
+  color: var(--chu-phu);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.ns-card-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ns-card-badge.on {
+  background: var(--ngoc-nhat, rgba(20, 148, 111, 0.12));
+  color: var(--ngoc, #14946f);
+}
+
+.ns-card-badge.sap-het {
+  background: var(--vang-nhat, rgba(215, 154, 34, 0.14));
+  color: var(--vang, #d97706);
+}
+
+.ns-card-badge.vuot {
+  background: var(--san-ho-nhat, rgba(229, 89, 63, 0.14));
+  color: var(--san-ho, #ef4444);
+}
+
+/* Nút ba chấm và popover menu */
+.ns-menu-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.ns-btn-menu {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--chu-phu);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.ns-btn-menu:hover,
+.ns-btn-menu:active {
+  background: var(--be-mat-phu, rgba(148, 163, 184, 0.12));
+  color: var(--chu);
+}
+
+.ns-menu-popover {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--be-mat);
+  border: 1px solid var(--vien);
+  border-radius: 14px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  padding: 4px;
+  z-index: 50;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: nsPopIn 0.15s ease-out;
+}
+
+@keyframes nsPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.ns-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--chu);
+  font-size: 0.85rem;
+  font-weight: 500;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.ns-menu-item:hover,
+.ns-menu-item:active {
+  background: var(--be-mat-phu, rgba(148, 163, 184, 0.1));
+}
+
+.ns-menu-item.xoa {
+  color: var(--san-ho, #ef4444);
+}
+
+.ns-menu-item.xoa:hover {
+  background: var(--san-ho-nhat, rgba(229, 89, 63, 0.1));
+}
+
+/* Hàng 2: Thanh tiến độ bo tròn */
+.ns-progress-track {
+  width: 100%;
+  height: 9px;
+  background: var(--be-mat-phu, rgba(148, 163, 184, 0.15));
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.ns-progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ns-progress-bar.on {
+  background: var(--ngoc, #14946f);
+}
+
+.ns-progress-bar.sap-het {
+  background: var(--vang, #d97706);
+}
+
+.ns-progress-bar.vuot {
+  background: var(--san-ho, #ef4444);
+}
+
+/* Hàng 3: Đã chi trái, Còn lại phải */
+.ns-card-row3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--chu-phu);
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.ns-card-row3-left {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ns-card-row3-right {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* Empty State */
+.ns-empty-card {
+  background: var(--be-mat);
+  border: 1px dashed var(--vien);
+  border-radius: 20px;
+  padding: 36px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ns-empty-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: var(--be-mat-phu, rgba(148, 163, 184, 0.08));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mau-chinh);
+}
+
+.ns-empty-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--chu);
+}
+
+.ns-empty-desc {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--chu-phu);
+  max-width: 280px;
+  line-height: 1.45;
+}
+
+.ns-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+/* Nút nổi Floating Action Button (FAB) */
+.ns-fab {
+  position: fixed;
+  bottom: calc(var(--chieu-cao-thanh-duoi, 60px) + 20px);
+  right: 20px;
+  width: 54px;
+  height: 54px;
+  border-radius: 27px;
+  background: var(--mau-chinh, #2563eb);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 8px 20px -3px rgba(37, 99, 235, 0.4), 0 4px 6px -4px rgba(37, 99, 235, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 40;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+
+.ns-fab:hover {
+  transform: scale(1.06);
+}
+
+.ns-fab:active {
+  transform: scale(0.94);
+}
+
+/* Responsive grid điều chỉnh */
+@media (min-width: 640px) {
+  .ns-list-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

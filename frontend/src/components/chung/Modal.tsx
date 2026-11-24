@@ -54,6 +54,7 @@ export function Modal({ mo, dong, tieuDe, rong, className = '', children }: Prop
             className="btn btn-nhe btn-icon btn-sm"
             onClick={dong}
             aria-label={t('Đóng')}
+            style={{ minWidth: 44, minHeight: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
           >
             <X size={18} />
           </button>

@@ -92,7 +92,7 @@ public class DuLieuService {
 
         List<NganSachDto> nsList = budgets.findAllByUserId(userId).stream()
                 .filter(Objects::nonNull)
-                .map(x -> new NganSachDto(x.getId(), x.getCategoryId(), x.getLimitAmount()))
+                .map(x -> new NganSachDto(x.getId(), x.getCategoryId(), x.getLimitAmount(), x.getKyNganSach(), x.getThang(), x.getNam()))
                 .toList();
 
         List<MucTieuDto> mtList = goals.findAllByUserId(userId).stream()
@@ -171,6 +171,21 @@ public class DuLieuService {
         sync(nss, budgets.findAllByUserId(userId), n -> n.id(), BudgetEntity::new, (e, x) -> {
             e.setCategoryId(x.maDanhMuc());
             e.setLimitAmount(nonNegative(x.hanMuc(), "Hạn mức không hợp lệ."));
+            String ky = x.kyNganSach();
+            Integer th = x.thang();
+            Integer nm = x.nam();
+            if ((ky == null || ky.isBlank()) && th != null && nm != null) {
+                ky = String.format("%04d-%02d", nm, th);
+            } else if (ky != null && !ky.isBlank() && (th == null || nm == null)) {
+                try {
+                    String[] parts = ky.split("-");
+                    nm = Integer.parseInt(parts[0]);
+                    th = Integer.parseInt(parts[1]);
+                } catch (Exception ignored) {}
+            }
+            e.setKyNganSach(ky);
+            e.setThang(th);
+            e.setNam(nm);
         }, budgets, userId);
 
         sync(mts, goals.findAllByUserId(userId), m -> m.id(), GoalEntity::new, (e, x) -> {
@@ -201,6 +216,10 @@ public class DuLieuService {
             LocalDate now = LocalDate.now();
             String currentMonth = String.format("%04d-%02d", now.getYear(), now.getMonthValue());
             for (BudgetEntity b : budgets.findAllByUserId(userId)) {
+                // Chỉ cảnh báo ngân sách của kỳ tháng hiện tại hoặc ngân sách không gán kỳ
+                if (b.getKyNganSach() != null && !b.getKyNganSach().isBlank() && !b.getKyNganSach().equals(currentMonth)) {
+                    continue;
+                }
                 CategoryEntity cat = catMap.get(b.getCategoryId());
                 if (cat != null) {
                     BigDecimal tongChiThang = allTx.stream()

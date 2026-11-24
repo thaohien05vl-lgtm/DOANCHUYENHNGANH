@@ -29,7 +29,7 @@ import { t } from '../utils/ngonNgu'
 export function GiaoDichTrang() {
   const { giaoDich, danhMuc, vi, xoa } = useDuLieu()
   const { thongBao, anSoDu } = useGiaoDien()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const kyParam = searchParams.get('ky')
   const idParam = searchParams.get('id')
 
@@ -70,6 +70,16 @@ export function GiaoDichTrang() {
   const [maVi, setMaVi] = useState('')
   const [maDm, setMaDm] = useState('')
   const [chiDinhKy, setChiDinhKy] = useState(false)
+
+  // Đóng modal chi tiết giao dịch và xóa id khỏi URL nếu có
+  const dongChiTiet = () => {
+    setGiaoDichThuCong(null)
+    if (searchParams.has('id')) {
+      const moi = new URLSearchParams(searchParams)
+      moi.delete('id')
+      setSearchParams(moi, { replace: true })
+    }
+  }
 
   // Điều khiển các Modal
   const [moForm, setMoForm] = useState(false)
@@ -542,7 +552,7 @@ export function GiaoDichTrang() {
         gd={dangXemChiTiet}
         danhMuc={danhMuc.find((d) => d.id === dangXemChiTiet?.maDanhMuc)}
         vi={vi.find((v) => v.id === dangXemChiTiet?.maVi)}
-        dong={() => setGiaoDichThuCong(null)}
+        dong={dongChiTiet}
         onSua={moSua}
         onXoa={setCanXoa}
       />

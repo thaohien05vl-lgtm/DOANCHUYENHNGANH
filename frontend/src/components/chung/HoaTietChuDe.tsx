@@ -153,6 +153,47 @@ export function HoaTietChuDe({ themeId, mini = false, className = '', height }: 
             <stop offset="0%" stopColor="#b09add" stopOpacity="0.24" />
             <stop offset="100%" stopColor="#7e22ce" stopOpacity="0.04" />
           </linearGradient>
+
+          {/* Bốn mùa: Xuân (Hoa đào, chồi non) */}
+          <linearGradient id="xuan-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#b85272" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#78a985" stopOpacity="0.05" />
+          </linearGradient>
+          <linearGradient id="xuan-petal" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#e889a5" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#f7cad7" stopOpacity="0.12" />
+          </linearGradient>
+
+          {/* Bốn mùa: Hạ (Biển xanh ngọc & nắng vàng cát) */}
+          <linearGradient id="ha-wave" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#267d8a" stopOpacity="0.22" />
+            <stop offset="100%" stopColor="#edd9aa" stopOpacity="0.04" />
+          </linearGradient>
+          <radialGradient id="ha-sun" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#edd9aa" stopOpacity="0.45" />
+            <stop offset="60%" stopColor="#d4a853" stopOpacity="0.15" />
+            <stop offset="100%" stopColor="#d4a853" stopOpacity="0" />
+          </radialGradient>
+
+          {/* Bốn mùa: Thu (Lá vàng phong & cam đất) */}
+          <linearGradient id="thu-leaf" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#be7b4e" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#cf9732" stopOpacity="0.08" />
+          </linearGradient>
+          <linearGradient id="thu-glow" x1="1" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#96562c" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#fcf6ee" stopOpacity="0.02" />
+          </linearGradient>
+
+          {/* Bốn mùa: Đông (Tuyết băng & bạc sương) */}
+          <linearGradient id="dong-frost" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#4a6880" stopOpacity="0.22" />
+            <stop offset="100%" stopColor="#8ea3b5" stopOpacity="0.04" />
+          </linearGradient>
+          <radialGradient id="dong-snow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#d8e1e8" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#4a6880" stopOpacity="0" />
+          </radialGradient>
         </defs>
 
         {/* 1. EMERALD FINANCE: Organic curves, leaves, and emerald arcs */}
@@ -448,6 +489,137 @@ export function HoaTietChuDe({ themeId, mini = false, className = '', height }: 
             />
             <circle cx="320" cy="60" r="115" fill="none" stroke="#b09add" strokeWidth="1.2" strokeOpacity="0.2" strokeDasharray="5 5" />
             <circle cx="80" cy="60" r="50" fill="url(#ame-grad)" opacity="0.5" />
+          </g>
+        )}
+
+        {/* 16. BỐN MÙA: XUÂN SÁNG & XUÂN TỐI - Hoa anh đào nở rộ, cánh hoa rơi và mầm xanh */}
+        {(activeId === 'xuan-sang' || activeId === 'xuan-toi') && (
+          <g className="lop-hoa-tiet">
+            <path
+              className="phan-tu-troi-1"
+              d="M 330 -30 C 400 30, 420 120, 350 170 C 280 200, 240 140, 260 80 C 280 20, 300 -60, 330 -30 Z"
+              fill="url(#xuan-grad)"
+            />
+            <path
+              className="phan-tu-troi-2"
+              d="M 40 -10 C 100 40, 110 120, 60 150 C 10 180, -30 140, -10 80 C 10 20, 20 -30, 40 -10 Z"
+              fill="url(#xuan-grad)"
+              opacity="0.6"
+            />
+            {/* Đóa hoa anh đào 5 cánh nghệ thuật */}
+            <g transform="translate(330, 60)" className="phan-tu-troi-1">
+              {[0, 72, 144, 216, 288].map((goc, i) => (
+                <path
+                  key={i}
+                  d="M 0 0 C -7 -16, -12 -26, 0 -30 C 12 -26, 7 -16, 0 0 Z"
+                  fill="url(#xuan-petal)"
+                  transform={`rotate(${goc})`}
+                />
+              ))}
+              <circle cx="0" cy="0" r="3.5" fill="#c2708b" fillOpacity="0.8" />
+            </g>
+            {/* Cánh hoa và chồi non bay lượn */}
+            <g transform="translate(180, 40) scale(0.65)" className="phan-tu-troi-2">
+              {[0, 72, 144, 216, 288].map((goc, i) => (
+                <path
+                  key={i}
+                  d="M 0 0 C -7 -16, -12 -26, 0 -30 C 12 -26, 7 -16, 0 0 Z"
+                  fill="url(#xuan-petal)"
+                  transform={`rotate(${goc})`}
+                />
+              ))}
+            </g>
+            <circle cx="250" cy="95" r="4.5" fill="#78a985" fillOpacity="0.45" />
+            <circle cx="120" cy="70" r="3.5" fill="#c2708b" fillOpacity="0.4" />
+          </g>
+        )}
+
+        {/* 17. BỐN MÙA: HẠ SÁNG & HẠ TỐI - Lớp sóng biển dạt dào và ánh nắng hè */}
+        {(activeId === 'ha-sang' || activeId === 'ha-toi') && (
+          <g className="lop-hoa-tiet">
+            <circle className="phan-tu-troi-1" cx="340" cy="45" r="58" fill="url(#ha-sun)" />
+            <path
+              className="phan-tu-song-1"
+              d="M -20 110 C 60 75, 140 140, 230 95 C 310 55, 370 115, 440 85 L 440 -20 L -20 -20 Z"
+              fill="url(#ha-wave)"
+            />
+            <path
+              className="phan-tu-song-2"
+              d="M -20 150 C 70 120, 160 170, 260 130 C 340 90, 390 145, 440 120 L 440 -20 L -20 -20 Z"
+              fill="url(#ha-wave)"
+              opacity="0.65"
+            />
+            <circle cx="340" cy="45" r="42" fill="none" stroke="#267d8a" strokeWidth="1.2" strokeOpacity="0.2" />
+            <circle cx="340" cy="45" r="26" fill="none" stroke="#267d8a" strokeWidth="1" strokeOpacity="0.15" />
+          </g>
+        )}
+
+        {/* 18. BỐN MÙA: THU SÁNG & THU TỐI - Những chiếc lá vàng phong và làn gió ấm */}
+        {(activeId === 'thu-sang' || activeId === 'thu-toi') && (
+          <g className="lop-hoa-tiet">
+            <path
+              className="phan-tu-troi-1"
+              d="M 280 -30 C 360 10, 420 80, 390 160 C 340 190, 260 140, 250 80 C 240 10, 250 -40, 280 -30 Z"
+              fill="url(#thu-glow)"
+            />
+            {/* Chiếc lá phong mùa thu */}
+            <path
+              className="phan-tu-troi-1"
+              d="M 330 30 Q 355 45 375 35 Q 365 55 385 70 Q 360 70 350 90 Q 345 70 320 65 Q 340 50 330 30 Z"
+              fill="url(#thu-leaf)"
+            />
+            <line x1="335" y1="40" x2="355" y2="75" stroke="#96562c" strokeWidth="1.2" strokeOpacity="0.4" />
+            {/* Chiếc lá thứ 2 nhỏ hơn trôi nhẹ */}
+            <path
+              className="phan-tu-troi-2"
+              d="M 120 40 Q 140 50 155 42 Q 145 60 165 72 Q 145 72 138 88 Q 133 72 112 68 Q 130 55 120 40 Z"
+              fill="url(#thu-leaf)"
+              opacity="0.7"
+              transform="scale(0.85)"
+            />
+            {/* Làn gió uốn lượn */}
+            <path
+              d="M 40 120 Q 140 60 240 110 T 400 80"
+              fill="none"
+              stroke="#cf9732"
+              strokeWidth="1.2"
+              strokeOpacity="0.25"
+              strokeDasharray="6 6"
+            />
+          </g>
+        )}
+
+        {/* 19. BỐN MÙA: ĐÔNG SÁNG & ĐÔNG TỐI - Tinh thể tuyết 6 cánh và tinh vân băng */}
+        {(activeId === 'dong-sang' || activeId === 'dong-toi') && (
+          <g className="lop-hoa-tiet">
+            <circle cx="330" cy="55" r="75" fill="url(#dong-snow)" opacity="0.4" />
+            <path
+              className="phan-tu-troi-1"
+              d="M 270 -20 L 390 10 L 430 130 L 310 170 L 230 70 Z"
+              fill="url(#dong-frost)"
+            />
+            {/* Bông tuyết 6 cánh hình học chuẩn */}
+            <g transform="translate(330, 55)" className="phan-tu-troi-1">
+              {[0, 60, 120, 180, 240, 300].map((goc, i) => (
+                <g key={i} transform={`rotate(${goc})`}>
+                  <line x1="0" y1="0" x2="0" y2="-32" stroke="#7293af" strokeWidth="1.8" strokeOpacity="0.5" />
+                  <line x1="0" y1="-18" x2="-8" y2="-26" stroke="#7293af" strokeWidth="1.2" strokeOpacity="0.45" />
+                  <line x1="0" y1="-18" x2="8" y2="-26" stroke="#7293af" strokeWidth="1.2" strokeOpacity="0.45" />
+                  <circle cx="0" cy="-32" r="2" fill="#7293af" fillOpacity="0.6" />
+                </g>
+              ))}
+              <circle cx="0" cy="0" r="3.5" fill="#4a6880" fillOpacity="0.7" />
+            </g>
+            {/* Bông tuyết phụ nhỏ hơn */}
+            <g transform="translate(130, 60) scale(0.55)" className="phan-tu-troi-2">
+              {[0, 60, 120, 180, 240, 300].map((goc, i) => (
+                <g key={i} transform={`rotate(${goc})`}>
+                  <line x1="0" y1="0" x2="0" y2="-28" stroke="#7293af" strokeWidth="1.6" strokeOpacity="0.4" />
+                  <line x1="0" y1="-16" x2="-7" y2="-23" stroke="#7293af" strokeWidth="1" strokeOpacity="0.35" />
+                  <line x1="0" y1="-16" x2="7" y2="-23" stroke="#7293af" strokeWidth="1" strokeOpacity="0.35" />
+                </g>
+              ))}
+            </g>
           </g>
         )}
       </svg>

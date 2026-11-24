@@ -121,6 +121,14 @@ export function GiaoDienProvider({ children }: { children: ReactNode }) {
       'rung-dem': 'la',
       thu: 'ho-phach',
       than: 'bien',
+      'xuan-sang': 'xuan-toi',
+      'xuan-toi': 'xuan-sang',
+      'ha-sang': 'ha-toi',
+      'ha-toi': 'ha-sang',
+      'thu-sang': 'thu-toi',
+      'thu-toi': 'thu-sang',
+      'dong-sang': 'dong-toi',
+      'dong-toi': 'dong-sang',
     }
     const target = cap[theme] ?? (toi ? 'ngoc' : 'dem')
     setTheme(target)

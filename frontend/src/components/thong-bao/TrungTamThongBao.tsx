@@ -34,6 +34,7 @@ interface Props {
   dong: () => void
   onCapNhatSoLuong?: () => void
   onChonGiaoDich?: (transactionId: string) => void
+  onMoChiTiet?: (item: ThongBaoNangCao) => void
 }
 
 /**
@@ -45,7 +46,7 @@ interface Props {
  * - Thẻ thông báo 3 hàng + CTA ngăn nắp, chống rớt dòng tuyệt đối.
  * - Tương thích hoàn chỉnh 15 Theme, Light Mode và Dark Mode.
  */
-export function TrungTamThongBao({ mo, dong, onCapNhatSoLuong, onChonGiaoDich }: Props) {
+export function TrungTamThongBao({ mo, dong, onCapNhatSoLuong, onChonGiaoDich, onMoChiTiet }: Props) {
   const [danhSach, setDanhSach] = useState<ThongBaoNangCao[]>([])
   const [dangTai, setDangTai] = useState(true)
   const [tabHienTai, setTabHienTai] = useState<TabLocThongBao>('tat-ca')
@@ -104,7 +105,11 @@ export function TrungTamThongBao({ mo, dong, onCapNhatSoLuong, onChonGiaoDich }:
       )
       onCapNhatSoLuong?.()
     }
-    setChiTiet(item)
+    if (onMoChiTiet) {
+      onMoChiTiet(item)
+    } else {
+      setChiTiet(item)
+    }
   }
 
   // Điều hướng tới giao dịch liên quan
@@ -402,13 +407,15 @@ export function TrungTamThongBao({ mo, dong, onCapNhatSoLuong, onChonGiaoDich }:
         </div>
       </div>
 
-      {/* Modal xem toàn văn chi tiết thông báo */}
-      <ThongBaoDetailModal
-        item={chiTiet}
-        dong={() => setChiTiet(null)}
-        onXemGiaoDich={xuLyXemGiaoDich}
-        onDieuHuong={xuLyDieuHuong}
-      />
+      {/* Modal xem toàn văn chi tiết thông báo (chỉ render nếu không có callback từ cha) */}
+      {!onMoChiTiet && (
+        <ThongBaoDetailModal
+          item={chiTiet}
+          dong={() => setChiTiet(null)}
+          onXemGiaoDich={xuLyXemGiaoDich}
+          onDieuHuong={xuLyDieuHuong}
+        />
+      )}
     </>,
     document.body,
   )

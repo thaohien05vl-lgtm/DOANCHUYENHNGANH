@@ -6,5 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BudgetRepository extends JpaRepository<BudgetEntity, String> {
     List<BudgetEntity> findAllByUserId(String userId);
+    List<BudgetEntity> findAllByUserIdAndKyNganSach(String userId, String kyNganSach);
+    List<BudgetEntity> findAllByUserIdAndThangAndNam(String userId, Integer thang, Integer nam);
     void deleteAllByUserId(String userId);
 }

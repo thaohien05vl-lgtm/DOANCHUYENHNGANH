@@ -73,11 +73,11 @@ export function taoDuLieuMau(): DuLieu {
     danhMuc: DANH_MUC_MAU,
     giaoDich: gd,
     nganSach: [
-      { id: 'ns-1', maDanhMuc: 'dm-an', hanMuc: 2200000 },
-      { id: 'ns-2', maDanhMuc: 'dm-dichuyen', hanMuc: 600000 },
-      { id: 'ns-3', maDanhMuc: 'dm-muasam', hanMuc: 1000000 },
-      { id: 'ns-4', maDanhMuc: 'dm-giaitri', hanMuc: 500000 },
-      { id: 'ns-5', maDanhMuc: 'dm-hoc', hanMuc: 800000 },
+      { id: 'ns-1', maDanhMuc: 'dm-an', hanMuc: 2200000, kyNganSach: thangNay },
+      { id: 'ns-2', maDanhMuc: 'dm-dichuyen', hanMuc: 600000, kyNganSach: thangNay },
+      { id: 'ns-3', maDanhMuc: 'dm-muasam', hanMuc: 1000000, kyNganSach: thangNay },
+      { id: 'ns-4', maDanhMuc: 'dm-giaitri', hanMuc: 500000, kyNganSach: thangNay },
+      { id: 'ns-5', maDanhMuc: 'dm-hoc', hanMuc: 800000, kyNganSach: thangNay },
     ],
     mucTieu: [
       { id: 'mt-1', ten: 'Mua laptop mới', soTienMucTieu: 18000000, daTietKiem: 7200000, han: han(8), mau: '#2F6FDB' },

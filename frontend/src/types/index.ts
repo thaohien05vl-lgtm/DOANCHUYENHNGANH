@@ -33,6 +33,9 @@ export interface NganSach {
   id: string
   maDanhMuc: string
   hanMuc: number // hạn mức theo tháng
+  kyNganSach?: string // YYYY-MM
+  thang?: number // 1 - 12
+  nam?: number // YYYY
 }
 
 export interface MucTieu {

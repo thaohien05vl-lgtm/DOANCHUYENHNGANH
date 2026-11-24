@@ -79,6 +79,8 @@ export function ThongBaoDetailModal({ item, dong, onXemGiaoDich, onDieuHuong }: 
       style={{ zIndex: 2250 }}
       role="presentation"
       onMouseDown={(e) => {
+        // Ngăn event bubble lên backdrop của TrungTamThongBao bên dưới
+        e.stopPropagation()
         if (e.target === e.currentTarget) dong()
       }}
     >
@@ -95,11 +97,13 @@ export function ThongBaoDetailModal({ item, dong, onXemGiaoDich, onDieuHuong }: 
               {tenLoaiThongBao}
             </span>
           </div>
+          {/* Nút X đóng – vùng bấm tối thiểu 44×44px theo WCAG */}
           <button
             type="button"
             className="finora-notif-btn-close"
-            onClick={dong}
+            onClick={(e) => { e.stopPropagation(); dong() }}
             aria-label={t('Đóng')}
+            style={{ minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
             <BieuTuongDong size={18} />
           </button>
@@ -195,6 +199,19 @@ export function ThongBaoDetailModal({ item, dong, onXemGiaoDich, onDieuHuong }: 
               <BieuTuongMuiTen size={16} />
             </button>
           ) : null}
+
+          {/* Nút đóng phụ tiện dụng dưới chân modal */}
+          <button
+            type="button"
+            className="btn btn-vien"
+            style={{ width: '100%', marginTop: 8, minHeight: 44, borderRadius: 12 }}
+            onClick={(e) => {
+              e.stopPropagation()
+              dong()
+            }}
+          >
+            {t('Đóng')}
+          </button>
         </div>
       </div>
     </div>,

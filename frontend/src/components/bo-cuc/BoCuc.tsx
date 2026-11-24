@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { NavLink, Navigate, Outlet, useLocation } from 'react-router-dom'
+import { NavLink, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   ArrowLeftRight,
   Bell,
@@ -26,6 +26,8 @@ import { FormGiaoDich } from '../chung/FormGiaoDich'
 import { HoaTietChuDe } from '../chung/HoaTietChuDe'
 import { BieuTrungLogo } from '../chung/Logo'
 import { TrungTamThongBao } from '../chung/TrungTamThongBao'
+import { ThongBaoDetailModal } from '../thong-bao/ThongBaoDetailModal'
+import type { ThongBaoNangCao } from '../thong-bao/thongBaoUtils'
 import { t } from '../../utils/ngonNgu'
 
 interface MucMenu {
@@ -66,9 +68,12 @@ export function BoCuc() {
   const { nguoiDung } = useXacThuc()
   const { toi, doiGiaoDien } = useGiaoDien()
   const { pathname } = useLocation()
+  const navigate = useNavigate()
   const [moThem, setMoThem] = useState(false)
   const [moThongBao, setMoThongBao] = useState(false)
   const [chuaDocDem, setChuaDocDem] = useState(0)
+  // State modal chi tiết thông báo nâng lên BoCuc để tránh bị unmount khi panel đóng
+  const [chiTietThongBao, setChiTietThongBao] = useState<ThongBaoNangCao | null>(null)
 
   const capNhatSoLuong = useCallback(() => {
     laySoLuongChuaDoc().then(setChuaDocDem).catch(() => undefined)
@@ -289,6 +294,22 @@ export function BoCuc() {
         mo={moThongBao}
         dong={() => setMoThongBao(false)}
         onCapNhatSoLuong={capNhatSoLuong}
+        onMoChiTiet={(item) => setChiTietThongBao(item)}
+      />
+      {/* Modal chi tiết thông báo render độc lập tại BoCuc – tránh bị unmount khi panel đóng */}
+      <ThongBaoDetailModal
+        item={chiTietThongBao}
+        dong={() => setChiTietThongBao(null)}
+        onXemGiaoDich={(id) => {
+          setChiTietThongBao(null)
+          setMoThongBao(false)
+          navigate(`/giao-dich?id=${id}`)
+        }}
+        onDieuHuong={(duongDan) => {
+          setChiTietThongBao(null)
+          setMoThongBao(false)
+          navigate(duongDan)
+        }}
       />
     </div>
   )
