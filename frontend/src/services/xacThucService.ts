@@ -7,6 +7,19 @@ interface AuthResponse {
   nguoiDung: NguoiDung
 }
 
+export interface GuiOtpResponse {
+  thanhCong: boolean
+  thongDiep: string
+  thoiGianChoGiay: number
+}
+
+export interface GuiOtpDangNhapResponse {
+  yeuCauOtp: boolean
+  email: string
+  token?: string | null
+  nguoiDung?: NguoiDung | null
+}
+
 function thongBaoLoi(error: unknown, macDinh: string): Error {
   const loi = error as { response?: { data?: { message?: string } }; message?: string; code?: string }
   const msg = loi.message || ''
@@ -33,13 +46,69 @@ export async function dangNhapApi(email: string, matKhau: string): Promise<Nguoi
   }
 }
 
-export async function dangKyApi(ten: string, email: string, matKhau: string): Promise<NguoiDung> {
+export async function dangKyApi(ten: string, email: string, matKhau: string): Promise<AuthResponse> {
   try {
     const response = await api.post<AuthResponse>('/api/xac-thuc/dang-ky', { ten, email, matKhau })
+    // Không tự động lưu token vào localStorage để người dùng quay về đăng nhập
+    return response.data
+  } catch (error) {
+    throw thongBaoLoi(error, t('Không thể tạo tài khoản. Vui lòng thử lại.'))
+  }
+}
+
+export async function guiOtpDangKyApi(ten: string, email: string): Promise<GuiOtpResponse> {
+  try {
+    const response = await api.post<GuiOtpResponse>('/api/xac-thuc/gui-otp-dang-ky', { ten, email })
+    return response.data
+  } catch (error) {
+    throw thongBaoLoi(error, t('Không thể gửi mã xác thực đăng ký. Vui lòng thử lại.'))
+  }
+}
+
+export async function xacNhanDangKyApi(
+  ten: string,
+  email: string,
+  matKhau: string,
+  otp: string,
+): Promise<AuthResponse> {
+  try {
+    const response = await api.post<AuthResponse>('/api/xac-thuc/xac-nhan-dang-ky', {
+      ten,
+      email,
+      matKhau,
+      otp,
+    })
+    return response.data
+  } catch (error) {
+    throw thongBaoLoi(error, t('Mã xác thực không chính xác hoặc đã hết hạn.'))
+  }
+}
+
+export async function guiOtpDangNhapApi(email: string, matKhau: string): Promise<GuiOtpDangNhapResponse> {
+  try {
+    const response = await api.post<GuiOtpDangNhapResponse>('/api/xac-thuc/gui-otp-dang-nhap', { email, matKhau })
+    return response.data
+  } catch (error) {
+    throw thongBaoLoi(error, t('Email hoặc mật khẩu không chính xác.'))
+  }
+}
+
+export async function xacNhanDangNhapApi(email: string, otp: string): Promise<NguoiDung> {
+  try {
+    const response = await api.post<AuthResponse>('/api/xac-thuc/xac-nhan-dang-nhap', { email, otp })
     localStorage.setItem('qlct-token', response.data.token)
     return response.data.nguoiDung
   } catch (error) {
-    throw thongBaoLoi(error, t('Không thể tạo tài khoản. Vui lòng thử lại.'))
+    throw thongBaoLoi(error, t('Mã xác thực không chính xác hoặc đã hết hạn.'))
+  }
+}
+
+export async function guiLaiOtpApi(email: string, loai: 'dang_ky' | 'dang_nhap'): Promise<GuiOtpResponse> {
+  try {
+    const response = await api.post<GuiOtpResponse>('/api/xac-thuc/gui-lai-otp', { email, loai })
+    return response.data
+  } catch (error) {
+    throw thongBaoLoi(error, t('Không thể gửi lại mã xác thực. Vui lòng thử lại.'))
   }
 }
 

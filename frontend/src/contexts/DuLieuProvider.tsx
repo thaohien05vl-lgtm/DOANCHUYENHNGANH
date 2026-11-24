@@ -76,6 +76,12 @@ export function DuLieuProvider({ children }: { children: ReactNode }) {
     }
   }, [thongBao])
 
+  const capNhatCucBo = useCallback((bienDoi: (cu: DuLieu) => DuLieu) => {
+    const moi = bienDoi(duRef.current)
+    duRef.current = moi
+    setDu(moi)
+  }, [])
+
   const luu = useCallback<DuLieuNguCanh['luu']>((khoa, muc) => {
     capNhat((cu) => {
       const ds = cu[khoa] as { id: string }[]
@@ -100,7 +106,10 @@ export function DuLieuProvider({ children }: { children: ReactNode }) {
 
   const datLaiMau = useCallback(() => capNhat(() => taoDuLieuMau()), [capNhat])
   const duHienThi = nguoiDung ? du : DU_LIEU_RONG
-  const value = useMemo<DuLieuNguCanh>(() => ({ ...duHienThi, luu, xoa, datLaiMau }), [duHienThi, luu, xoa, datLaiMau])
+  const value = useMemo<DuLieuNguCanh>(
+    () => ({ ...duHienThi, luu, capNhatCucBo, xoa, datLaiMau }),
+    [duHienThi, luu, capNhatCucBo, xoa, datLaiMau],
+  )
 
   // Không hiển thị màn hình nghiệp vụ khi dữ liệu từ tài khoản chưa tải xong,
   // tránh việc người dùng lưu snapshot rỗng và ghi đè dữ liệu đã có trên server.

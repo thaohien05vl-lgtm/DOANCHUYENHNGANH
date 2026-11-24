@@ -72,3 +72,17 @@ export function soThangConLai(han: string): number {
 }
 
 export const taoId = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4)
+
+export function dinhDangNgayGio(isoString: string): string {
+  try {
+    const d = new Date(isoString)
+    if (isNaN(d.getTime())) return isoString
+    const padNum = (n: number) => String(n).padStart(2, '0')
+    const gio = `${padNum(d.getHours())}:${padNum(d.getMinutes())}`
+    const ngay = `${padNum(d.getDate())}/${padNum(d.getMonth() + 1)}/${d.getFullYear()}`
+    return `${gio}, ${ngay}`
+  } catch {
+    return isoString
+  }
+}
+

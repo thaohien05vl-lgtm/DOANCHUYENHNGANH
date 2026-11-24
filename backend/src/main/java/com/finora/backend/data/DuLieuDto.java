@@ -17,5 +17,11 @@ public record DuLieuDto(
                               String maVi, String ngay, String ghiChu, String dinhKy) {}
     public record NganSachDto(String id, String maDanhMuc, BigDecimal hanMuc) {}
     public record MucTieuDto(String id, String ten, BigDecimal soTienMucTieu,
-                             BigDecimal daTietKiem, String han, String mau) {}
+                             BigDecimal daTietKiem, String han, String mau,
+                             Integer nguongCanhBao) {
+        public MucTieuDto(String id, String ten, BigDecimal soTienMucTieu,
+                          BigDecimal daTietKiem, String han, String mau) {
+            this(id, ten, soTienMucTieu, daTietKiem, han, mau, 80);
+        }
+    }
 }

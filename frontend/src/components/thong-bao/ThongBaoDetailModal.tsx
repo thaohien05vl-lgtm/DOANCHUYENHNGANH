@@ -10,12 +10,13 @@ interface DetailProps {
   item: ThongBaoNangCao | null
   dong: () => void
   onXemGiaoDich: (transactionId: string) => void
+  onDieuHuong?: (duongDan: string) => void
 }
 
 /**
  * Modal xem toàn văn chi tiết thông báo tài chính
  */
-export function ThongBaoDetailModal({ item, dong, onXemGiaoDich }: DetailProps) {
+export function ThongBaoDetailModal({ item, dong, onXemGiaoDich, onDieuHuong }: DetailProps) {
   useEffect(() => {
     if (!item) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && dong()
@@ -165,8 +166,8 @@ export function ThongBaoDetailModal({ item, dong, onXemGiaoDich }: DetailProps) 
             </p>
           </div>
 
-          {/* Nút hành động xem giao dịch nếu có */}
-          {item.transactionId && (
+          {/* Nút hành động xem giao dịch hoặc điều hướng nghiệp vụ */}
+          {item.transactionId ? (
             <button
               type="button"
               className="finora-notif-detail-btn-go"
@@ -175,7 +176,25 @@ export function ThongBaoDetailModal({ item, dong, onXemGiaoDich }: DetailProps) 
               <span>{t('Xem chi tiết giao dịch')}</span>
               <BieuTuongMuiTen size={16} />
             </button>
-          )}
+          ) : (item.type?.includes('muc_tieu') || item.type?.includes('tiet_kiem') || item.glyphType === 'SAVINGS') && onDieuHuong ? (
+            <button
+              type="button"
+              className="finora-notif-detail-btn-go"
+              onClick={() => onDieuHuong('/muc-tieu')}
+            >
+              <span>{t('Xem mục tiêu tiết kiệm')}</span>
+              <BieuTuongMuiTen size={16} />
+            </button>
+          ) : (item.type?.includes('ngan_sach') || item.glyphType === 'BUDGET') && onDieuHuong ? (
+            <button
+              type="button"
+              className="finora-notif-detail-btn-go"
+              onClick={() => onDieuHuong('/ngan-sach')}
+            >
+              <span>{t('Xem quản lý ngân sách')}</span>
+              <BieuTuongMuiTen size={16} />
+            </button>
+          ) : null}
         </div>
       </div>
     </div>,

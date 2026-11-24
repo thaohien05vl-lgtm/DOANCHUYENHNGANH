@@ -17,6 +17,10 @@ public class GoalEntity extends OwnedEntity {
     private java.time.LocalDate dueDate;
     @Column(nullable = false, length = 240, name = "color")
     private String color;
+    @Column(name = "alert_threshold")
+    private Integer alertThreshold = 80;
+    @Column(name = "alert_sent_threshold")
+    private Integer alertSentThreshold = 0;
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -28,4 +32,8 @@ public class GoalEntity extends OwnedEntity {
     public void setDueDate(java.time.LocalDate dueDate) { this.dueDate = dueDate; }
     public String getColor() { return color; }
     public void setColor(String color) { this.color = color; }
+    public Integer getAlertThreshold() { return alertThreshold != null ? alertThreshold : 80; }
+    public void setAlertThreshold(Integer alertThreshold) { this.alertThreshold = alertThreshold != null ? alertThreshold : 80; }
+    public Integer getAlertSentThreshold() { return alertSentThreshold != null ? alertSentThreshold : 0; }
+    public void setAlertSentThreshold(Integer alertSentThreshold) { this.alertSentThreshold = alertSentThreshold != null ? alertSentThreshold : 0; }
 }

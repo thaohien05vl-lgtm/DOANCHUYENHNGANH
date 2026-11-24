@@ -1,14 +1,16 @@
-import { useState, type FormEvent } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { useEffect, useState, type FormEvent } from 'react'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
   ChartNoAxesCombined,
   CheckCircle2,
   Eye,
   EyeOff,
+  KeyRound,
   LoaderCircle,
   Lock,
   Mail,
+  RefreshCw,
   ScanLine,
   ShieldCheck,
   User,
@@ -16,7 +18,12 @@ import {
 import { BieuTrungLogo } from '../components/chung/Logo'
 import { useGiaoDien } from '../hooks/useGiaoDien'
 import { useXacThuc } from '../hooks/useXacThuc'
-import { quenMatKhauApi } from '../services/xacThucService'
+import {
+  guiLaiOtpApi,
+  guiOtpDangKyApi,
+  quenMatKhauApi,
+  xacNhanDangKyApi,
+} from '../services/xacThucService'
 import { dangNhapGoogle, dangNhapFacebook } from '../utils/oauthClient'
 import { CaiDatMayChu } from '../components/chung/CaiDatMayChu'
 import { t } from '../utils/ngonNgu'
@@ -160,18 +167,6 @@ function NutMangXaHoi() {
   )
 }
 
-function useGuiForm(thucHien: () => Promise<void>) {
-  const nav = useNavigate()
-  const [loi, setLoi] = useState('')
-  const [dang, setDang] = useState(false)
-  async function gui(e: FormEvent) {
-    e.preventDefault()
-    setLoi(''); setDang(true)
-    try { await thucHien(); nav('/', { replace: true }) } catch (x) { setLoi(x instanceof Error ? x.message : t('Có lỗi xảy ra, thử lại nhé.')) } finally { setDang(false) }
-  }
-  return { loi, dang, gui }
-}
-
 function OMatKhau({
   gia,
   doi,
@@ -211,90 +206,173 @@ function OMatKhau({
 
 export function DangNhap() {
   const { nguoiDung, dangNhap } = useXacThuc()
-  const [email, setEmail] = useState('')
-  const [mk, setMk] = useState('')
-  const { loi, dang, gui } = useGuiForm(() => dangNhap(email, mk))
-  if (nguoiDung) return <Navigate to="/" replace />
-  return (
-    <KhungXacThuc
-      tieuDe={t('Chào mừng trở lại')}
-      moTa={t('Đăng nhập để xem và quản lý tài chính của bạn.')}
-    >
-      <form className="form" onSubmit={gui}>
-        <div className="truong">
-          <label htmlFor="dn-email">Email</label>
-          <div className="o-co-icon">
-            <Mail size={18} />
-            <input
-              id="dn-email"
-              type="email"
-              className="o-nhap"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@example.com"
-              autoComplete="email"
-              required
-            />
-          </div>
-        </div>
-        <div className="truong">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <label htmlFor="dn-mk">{t('Mật khẩu')}</label>
-            <Link
-              to="/quen-mat-khau"
-              style={{
-                fontSize: '0.82rem',
-                color: 'var(--ngoc)',
-                fontWeight: 600,
-                textDecoration: 'none',
-              }}
-            >
-              {t('Quên mật khẩu?')}
-            </Link>
-          </div>
-          <OMatKhau id="dn-mk" gia={mk} doi={setMk} />
-        </div>
-        {loi && <div className="canh-bao" role="alert">{loi}</div>}
-        <button type="submit" className="btn-xac-thuc-chinh" disabled={dang}>
-          {dang ? (
-            <>
-              <LoaderCircle size={18} className="xoay" />
-              {t('Đang đăng nhập…')}
-            </>
-          ) : (
-            t('Đăng nhập')
-          )}
-        </button>
-      </form>
-      <NutMangXaHoi />
-      <p className="mo nho" style={{ textAlign: 'center' }}>
-        {t('Chưa có tài khoản?{0}', [' '])}
-        <Link to="/dang-ky" className="dam" style={{ color: 'var(--ngoc)' }}>
-          {t('Đăng ký ngay')}
-        </Link>
-      </p>
-      <div style={{ textAlign: 'center', marginTop: 4 }}>
-        <CaiDatMayChu />
-      </div>
-    </KhungXacThuc>
-  )
-}
-
-export function DangKy() {
-  const { nguoiDung, dangKy } = useXacThuc()
+  const { thongBao } = useGiaoDien()
   const nav = useNavigate()
-  const [ten, setTen] = useState('')
-  const [email, setEmail] = useState('')
+  const location = useLocation()
+  const emailDangKy = (location.state as { emailDangKy?: string } | null)?.emailDangKy
+
+  const [email, setEmail] = useState(emailDangKy || '')
   const [mk, setMk] = useState('')
-  const [xacNhanMk, setXacNhanMk] = useState('')
   const [loi, setLoi] = useState('')
   const [dang, setDang] = useState(false)
 
   if (nguoiDung) return <Navigate to="/" replace />
 
-  async function xuLyDangKy(e: FormEvent) {
+  async function xuLyDangNhap(e: FormEvent) {
     e.preventDefault()
     setLoi('')
+    const emailTrim = email.trim().toLowerCase()
+    if (!emailTrim || !mk) {
+      setLoi(t('Vui lòng nhập đầy đủ email và mật khẩu.'))
+      return
+    }
+    setDang(true)
+    try {
+      await dangNhap(emailTrim, mk)
+      thongBao(t('Đăng nhập thành công! Chào mừng bạn trở lại.'), 'ok')
+      nav('/', { replace: true })
+    } catch (err) {
+      setLoi(err instanceof Error ? err.message : t('Email hoặc mật khẩu không chính xác.'))
+    } finally {
+      setDang(false)
+    }
+  }
+
+  return (
+    <KhungXacThuc
+      tieuDe={t('Chào mừng trở lại')}
+      moTa={t('Đăng nhập để xem và quản lý tài chính của bạn.')}
+    >
+      {emailDangKy && (
+        <div
+          role="status"
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: 12,
+            padding: '12px 14px',
+            borderRadius: '12px',
+            background: 'rgba(20, 148, 111, 0.12)',
+            border: '1px solid rgba(20, 148, 111, 0.35)',
+            color: 'var(--chu-chinh)',
+            marginBottom: 16,
+            fontSize: '0.88rem',
+            lineHeight: 1.45,
+          }}
+        >
+          <CheckCircle2 size={20} style={{ color: 'var(--ngoc)', flexShrink: 0, marginTop: 2 }} />
+          <div>
+            <div style={{ fontWeight: 700, color: 'var(--ngoc)', marginBottom: 2 }}>
+              {t('Đăng ký tài khoản thành công!')}
+            </div>
+            <div>
+              {t('Tài khoản đã tạo thành công. Vui lòng nhập mật khẩu để đăng nhập vào Finora.', [emailDangKy])}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <>
+        <form className="form" onSubmit={xuLyDangNhap}>
+          <div className="truong">
+            <label htmlFor="dn-email">Email</label>
+            <div className="o-co-icon">
+              <Mail size={18} />
+              <input
+                id="dn-email"
+                type="email"
+                className="o-nhap"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@example.com"
+                autoComplete="email"
+                required
+              />
+            </div>
+          </div>
+          <div className="truong">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label htmlFor="dn-mk">{t('Mật khẩu')}</label>
+              <Link
+                to="/quen-mat-khau"
+                style={{
+                  fontSize: '0.82rem',
+                  color: 'var(--ngoc)',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                }}
+              >
+                {t('Quên mật khẩu?')}
+              </Link>
+            </div>
+            <OMatKhau id="dn-mk" gia={mk} doi={setMk} />
+          </div>
+          {loi && <div className="canh-bao" role="alert">{loi}</div>}
+          <button type="submit" className="btn-xac-thuc-chinh" disabled={dang}>
+            {dang ? (
+              <>
+                <LoaderCircle size={18} className="xoay" />
+                {t('Đang đăng nhập…')}
+              </>
+            ) : (
+              t('Đăng nhập')
+            )}
+          </button>
+        </form>
+        <NutMangXaHoi />
+        <p className="mo nho" style={{ textAlign: 'center' }}>
+          {t('Chưa có tài khoản?{0}', [' '])}
+          <Link to="/dang-ky" className="dam" style={{ color: 'var(--ngoc)' }}>
+            {t('Đăng ký ngay')}
+          </Link>
+        </p>
+        <div style={{ textAlign: 'center', marginTop: 4 }}>
+          <CaiDatMayChu />
+        </div>
+      </>
+    </KhungXacThuc>
+  )
+}
+
+export function DangKy() {
+  const { nguoiDung } = useXacThuc()
+  const { thongBao } = useGiaoDien()
+  const nav = useNavigate()
+
+  const [buoc, setBuoc] = useState<'thong_tin' | 'nhap_otp'>('thong_tin')
+  const [ten, setTen] = useState('')
+  const [email, setEmail] = useState('')
+  const [mk, setMk] = useState('')
+  const [xacNhanMk, setXacNhanMk] = useState('')
+  const [otp, setOtp] = useState('')
+  const [loi, setLoi] = useState('')
+  const [dang, setDang] = useState(false)
+  const [dangGuiLai, setDangGuiLai] = useState(false)
+  const [demNguoc, setDemNguoc] = useState(0)
+
+  useEffect(() => {
+    if (demNguoc <= 0) return
+    const id = window.setInterval(() => {
+      setDemNguoc((prev) => (prev > 0 ? prev - 1 : 0))
+    }, 1000)
+    return () => window.clearInterval(id)
+  }, [demNguoc])
+
+  if (nguoiDung) return <Navigate to="/" replace />
+
+  async function xuLyGuiOtp(e: FormEvent) {
+    e.preventDefault()
+    setLoi('')
+    const tenTrim = ten.trim()
+    const emailTrim = email.trim().toLowerCase()
+    if (!tenTrim) {
+      setLoi(t('Vui lòng nhập họ và tên.'))
+      return
+    }
+    if (!emailTrim) {
+      setLoi(t('Vui lòng nhập email.'))
+      return
+    }
     if (mk.length < 6) {
       setLoi(t('Mật khẩu phải có ít nhất 6 ký tự.'))
       return
@@ -305,79 +383,204 @@ export function DangKy() {
     }
     setDang(true)
     try {
-      await dangKy(ten.trim(), email, mk)
-      nav('/', { replace: true })
-    } catch (x) {
-      setLoi(x instanceof Error ? x.message : t('Không thể tạo tài khoản, vui lòng thử lại.'))
+      await guiOtpDangKyApi(tenTrim, emailTrim)
+      setBuoc('nhap_otp')
+      setDemNguoc(45)
+      setOtp('')
+      thongBao(t('Mã OTP xác thực đã được gửi tới {0}. Vui lòng kiểm tra hộp thư.', [emailTrim]), 'thongtin')
+    } catch (err) {
+      setLoi(err instanceof Error ? err.message : t('Không thể gửi mã xác thực. Vui lòng thử lại.'))
     } finally {
       setDang(false)
     }
   }
 
+  async function xuLyXacNhanOtp(e: FormEvent) {
+    e.preventDefault()
+    setLoi('')
+    const cleanOtp = otp.trim()
+    if (cleanOtp.length !== 6) {
+      setLoi(t('Mã xác thực gồm đúng 6 chữ số.'))
+      return
+    }
+    setDang(true)
+    try {
+      const emailTrim = email.trim().toLowerCase()
+      await xacNhanDangKyApi(ten.trim(), emailTrim, mk, cleanOtp)
+      thongBao(
+        t('Đăng ký tài khoản thành công! Email thông báo đã được gửi tới {0}. Vui lòng đăng nhập lại.', [emailTrim]),
+        'ok',
+      )
+      nav('/dang-nhap', { state: { emailDangKy: emailTrim }, replace: true })
+    } catch (err) {
+      setLoi(err instanceof Error ? err.message : t('Mã xác thực không chính xác hoặc đã hết hạn.'))
+    } finally {
+      setDang(false)
+    }
+  }
+
+  async function xuLyGuiLaiOtp() {
+    if (dangGuiLai || demNguoc > 0) return
+    setDangGuiLai(true)
+    setLoi('')
+    try {
+      const emailTrim = email.trim().toLowerCase()
+      const res = await guiLaiOtpApi(emailTrim, 'dang_ky')
+      setDemNguoc(res.thoiGianChoGiay || 45)
+      thongBao(t('Đã gửi lại mã OTP tới {0}.', [emailTrim]), 'thongtin')
+    } catch (err) {
+      setLoi(err instanceof Error ? err.message : t('Không thể gửi lại mã OTP. Vui lòng thử lại.'))
+    } finally {
+      setDangGuiLai(false)
+    }
+  }
+
   return (
     <KhungXacThuc
-      tieuDe={t('Tạo tài khoản Finora')}
-      moTa={t('Bắt đầu quản lý tài chính cá nhân của bạn.')}
+      tieuDe={buoc === 'nhap_otp' ? t('Xác thực đăng ký (OTP)') : t('Tạo tài khoản Finora')}
+      moTa={
+        buoc === 'nhap_otp'
+          ? t('Mã xác thực 6 số đã được gửi tới email của bạn.')
+          : t('Bắt đầu quản lý tài chính cá nhân của bạn.')
+      }
     >
-      <form className="form" onSubmit={xuLyDangKy}>
-        <div className="truong">
-          <label htmlFor="dk-ten">{t('Họ và tên')}</label>
-          <div className="o-co-icon">
-            <User size={18} />
-            <input
-              id="dk-ten"
-              className="o-nhap"
-              value={ten}
-              onChange={(e) => setTen(e.target.value)}
-              placeholder={t('Nguyễn Văn A')}
-              autoComplete="name"
-              required
-            />
+      {buoc === 'thong_tin' ? (
+        <>
+          <form className="form" onSubmit={xuLyGuiOtp}>
+            <div className="truong">
+              <label htmlFor="dk-ten">{t('Họ và tên')}</label>
+              <div className="o-co-icon">
+                <User size={18} />
+                <input
+                  id="dk-ten"
+                  className="o-nhap"
+                  value={ten}
+                  onChange={(e) => setTen(e.target.value)}
+                  placeholder={t('Nguyễn Văn A')}
+                  autoComplete="name"
+                  required
+                />
+              </div>
+            </div>
+            <div className="truong">
+              <label htmlFor="dk-email">Email</label>
+              <div className="o-co-icon">
+                <Mail size={18} />
+                <input
+                  id="dk-email"
+                  type="email"
+                  className="o-nhap"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  autoComplete="email"
+                  required
+                />
+              </div>
+            </div>
+            <div className="truong">
+              <label htmlFor="dk-mk">{t('Mật khẩu')}</label>
+              <OMatKhau id="dk-mk" gia={mk} doi={setMk} placeholder={t('Tối thiểu 6 ký tự')} />
+            </div>
+            <div className="truong">
+              <label htmlFor="dk-xac-nhan-mk">{t('Nhập lại mật khẩu')}</label>
+              <OMatKhau id="dk-xac-nhan-mk" gia={xacNhanMk} doi={setXacNhanMk} placeholder={t('Nhập lại mật khẩu trên')} />
+            </div>
+            {loi && <div className="canh-bao" role="alert">{loi}</div>}
+            <button type="submit" className="btn-xac-thuc-chinh" disabled={dang}>
+              {dang ? (
+                <>
+                  <LoaderCircle size={18} className="xoay" />
+                  {t('Đang gửi mã OTP…')}
+                </>
+              ) : (
+                t('Tiếp tục (Nhận mã OTP)')
+              )}
+            </button>
+          </form>
+          <NutMangXaHoi />
+          <p className="mo nho" style={{ textAlign: 'center' }}>
+            {t('Đã có tài khoản?{0}', [' '])}
+            <Link to="/dang-nhap" className="dam" style={{ color: 'var(--ngoc)' }}>
+              {t('Đăng nhập')}
+            </Link>
+          </p>
+        </>
+      ) : (
+        <form className="form" onSubmit={xuLyXacNhanOtp}>
+          <div className="otp-thong-tin-email">
+            <div className="otp-email-icon">
+              <Mail size={18} />
+            </div>
+            <div className="otp-email-text">
+              <span className="otp-email-nhan">{t('Xác thực tài khoản cho')}</span>
+              <strong className="otp-email-gia-tri">{email}</strong>
+            </div>
           </div>
-        </div>
-        <div className="truong">
-          <label htmlFor="dk-email">Email</label>
-          <div className="o-co-icon">
-            <Mail size={18} />
-            <input
-              id="dk-email"
-              type="email"
-              className="o-nhap"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@example.com"
-              autoComplete="email"
-              required
-            />
+
+          <div className="truong">
+            <label htmlFor="dk-otp">{t('Mã xác thực (6 chữ số)')}</label>
+            <div className="o-co-icon">
+              <KeyRound size={18} />
+              <input
+                id="dk-otp"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={6}
+                className="o-nhap o-nhap-otp"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder="000000"
+                autoFocus
+                autoComplete="one-time-code"
+                required
+              />
+            </div>
+            <div className="otp-hang-gui-lai">
+              {demNguoc > 0 ? (
+                <span className="otp-dem-nguoc">{t('Gửi lại mã sau {0}s', [demNguoc])}</span>
+              ) : (
+                <button
+                  type="button"
+                  className="otp-nut-gui-lai"
+                  onClick={xuLyGuiLaiOtp}
+                  disabled={dangGuiLai}
+                >
+                  {dangGuiLai ? <LoaderCircle size={14} className="xoay" /> : <RefreshCw size={14} />}
+                  {t('Gửi lại mã OTP')}
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="truong">
-          <label htmlFor="dk-mk">{t('Mật khẩu')}</label>
-          <OMatKhau id="dk-mk" gia={mk} doi={setMk} placeholder={t('Tối thiểu 6 ký tự')} />
-        </div>
-        <div className="truong">
-          <label htmlFor="dk-xac-nhan-mk">{t('Nhập lại mật khẩu')}</label>
-          <OMatKhau id="dk-xac-nhan-mk" gia={xacNhanMk} doi={setXacNhanMk} placeholder={t('Nhập lại mật khẩu trên')} />
-        </div>
-        {loi && <div className="canh-bao" role="alert">{loi}</div>}
-        <button type="submit" className="btn-xac-thuc-chinh" disabled={dang}>
-          {dang ? (
-            <>
-              <LoaderCircle size={18} className="xoay" />
-              {t('Đang tạo tài khoản…')}
-            </>
-          ) : (
-            t('Tạo tài khoản')
-          )}
-        </button>
-      </form>
-      <NutMangXaHoi />
-      <p className="mo nho" style={{ textAlign: 'center' }}>
-        {t('Đã có tài khoản?{0}', [' '])}
-        <Link to="/dang-nhap" className="dam" style={{ color: 'var(--ngoc)' }}>
-          {t('Đăng nhập')}
-        </Link>
-      </p>
+
+          {loi && <div className="canh-bao" role="alert">{loi}</div>}
+
+          <button type="submit" className="btn-xac-thuc-chinh" disabled={dang || otp.length !== 6}>
+            {dang ? (
+              <>
+                <LoaderCircle size={18} className="xoay" />
+                {t('Đang tạo tài khoản…')}
+              </>
+            ) : (
+              t('Xác nhận & Hoàn tất')
+            )}
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-phu"
+            style={{ width: '100%', height: 44, borderRadius: 14, marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+            onClick={() => {
+              setBuoc('thong_tin')
+              setOtp('')
+              setLoi('')
+            }}
+          >
+            <ArrowLeft size={16} /> {t('Quay lại chỉnh sửa thông tin')}
+          </button>
+        </form>
+      )}
     </KhungXacThuc>
   )
 }

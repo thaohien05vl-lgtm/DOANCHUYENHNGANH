@@ -42,6 +42,18 @@ export interface MucTieu {
   daTietKiem: number
   han: string // YYYY-MM-DD
   mau: string
+  nguongCanhBao?: number // Ngưỡng cảnh báo %, mặc định 80%
+}
+
+export interface LichSuNapMucTieu {
+  id: string
+  goalId: string
+  walletId: string
+  walletName: string
+  amount: number
+  savedAmountAfter: number
+  note?: string
+  createdAt: string
 }
 
 export interface DuLieu {

@@ -3,6 +3,7 @@ package com.finora.backend.auth;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finora.backend.data.DuLieuService;
+import com.finora.backend.email.EmailService;
 import com.finora.backend.entity.AppUser;
 import com.finora.backend.repository.AppUserRepository;
 import com.finora.backend.security.JwtService;
@@ -35,6 +36,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final DuLieuService duLieuService;
+    private final EmailService emailService;
+    private final OtpService otpService;
     private final ObjectMapper objectMapper;
     private final HttpClient httpClient;
     /** Danh sách Google OAuth Client ID (loại Web) được phép. Rỗng = bỏ qua kiểm tra (chỉ nên dùng khi dev). */
@@ -46,12 +49,19 @@ public class AuthService {
 
     public AuthService(AppUserRepository users, PasswordEncoder passwordEncoder,
                        JwtService jwtService, DuLieuService duLieuService) {
-        this(users, passwordEncoder, jwtService, duLieuService, new ObjectMapper(), "", "", "");
+        this(users, passwordEncoder, jwtService, duLieuService, null, new OtpService(), new ObjectMapper(), "", "", "");
+    }
+
+    public AuthService(AppUserRepository users, PasswordEncoder passwordEncoder,
+                       JwtService jwtService, DuLieuService duLieuService, EmailService emailService) {
+        this(users, passwordEncoder, jwtService, duLieuService, emailService, new OtpService(), new ObjectMapper(), "", "", "");
     }
 
     @Autowired
     public AuthService(AppUserRepository users, PasswordEncoder passwordEncoder,
                        JwtService jwtService, DuLieuService duLieuService,
+                       @Autowired(required = false) EmailService emailService,
+                       OtpService otpService,
                        ObjectMapper objectMapper,
                        @Value("${app.oauth.google-client-ids:}") String googleClientIds,
                        @Value("${app.oauth.facebook-app-id:}") String facebookAppId,
@@ -60,6 +70,8 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.duLieuService = duLieuService;
+        this.emailService = emailService;
+        this.otpService = otpService != null ? otpService : new OtpService();
         this.objectMapper = objectMapper != null ? objectMapper : new ObjectMapper();
         this.googleClientIds = googleClientIds == null ? List.of()
                 : Arrays.stream(googleClientIds.split(",")).map(String::trim).filter(x -> !x.isEmpty()).toList();
@@ -92,6 +104,9 @@ public class AuthService {
         user.setPasswordHash(passwordEncoder.encode(request.matKhau()));
         users.save(user);
         duLieuService.taoDuLieuMacDinh(user.getId());
+        if (emailService != null) {
+            emailService.guiEmailThongBaoDangKy(user.getEmail(), user.getFullName());
+        }
         return response(user);
     }
 
@@ -103,6 +118,94 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email hoặc mật khẩu không chính xác.");
         }
         return response(user);
+    }
+
+    @Transactional(readOnly = true)
+    public AuthDtos.GuiOtpResponse guiOtpDangKy(AuthDtos.GuiOtpDangKyRequest request) {
+        String email = request.email().trim().toLowerCase();
+        if (users.existsByEmailIgnoreCase(email)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email này đã được đăng ký tài khoản.");
+        }
+        String otp = otpService.taoOtp(email, "dang_ky");
+        if (emailService != null) {
+            emailService.guiEmailMaXacNhanOTP(email, request.ten().trim(), otp, "dang_ky");
+        }
+        return new AuthDtos.GuiOtpResponse(true, "Mã xác thực đã được gửi tới " + email, otpService.getRemainingCooldownSeconds(email, "dang_ky"));
+    }
+
+    @Transactional
+    public AuthDtos.AuthResponse xacNhanDangKy(AuthDtos.XacNhanDangKyRequest request) {
+        String email = request.email().trim().toLowerCase();
+        otpService.xacThucOtp(email, "dang_ky", request.otp());
+
+        if (request.matKhau().getBytes(StandardCharsets.UTF_8).length > 72) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mật khẩu không được vượt quá 72 byte UTF-8.");
+        }
+        if (users.existsByEmailIgnoreCase(email)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email này đã được đăng ký.");
+        }
+        AppUser user = new AppUser();
+        user.setId(UUID.randomUUID().toString());
+        user.setFullName(request.ten().trim());
+        user.setEmail(email);
+        user.setPasswordHash(passwordEncoder.encode(request.matKhau()));
+        users.save(user);
+        duLieuService.taoDuLieuMacDinh(user.getId());
+        if (emailService != null) {
+            emailService.guiEmailThongBaoDangKy(user.getEmail(), user.getFullName());
+        }
+        return response(user);
+    }
+
+    @Transactional(readOnly = true)
+    public AuthDtos.DangNhapResponse guiOtpDangNhap(AuthDtos.DangNhapRequest request) {
+        String email = request.email().trim().toLowerCase();
+        AppUser user = users.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email hoặc mật khẩu không chính xác."));
+        if (!passwordEncoder.matches(request.matKhau(), user.getPasswordHash())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email hoặc mật khẩu không chính xác.");
+        }
+
+        String otp = otpService.taoOtp(email, "dang_nhap");
+        if (emailService != null) {
+            emailService.guiEmailMaXacNhanOTP(user.getEmail(), user.getFullName(), otp, "dang_nhap");
+        }
+        return new AuthDtos.DangNhapResponse(true, email, null, null);
+    }
+
+    @Transactional(readOnly = true)
+    public AuthDtos.AuthResponse xacNhanDangNhap(AuthDtos.XacNhanDangNhapRequest request) {
+        String email = request.email().trim().toLowerCase();
+        otpService.xacThucOtp(email, "dang_nhap", request.otp());
+
+        AppUser user = users.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Tài khoản không tồn tại."));
+        return response(user);
+    }
+
+    @Transactional(readOnly = true)
+    public AuthDtos.GuiOtpResponse guiLaiOtp(AuthDtos.GuiLaiOtpRequest request) {
+        String email = request.email().trim().toLowerCase();
+        String loai = request.loai().trim().toLowerCase();
+        String fullName = "bạn";
+
+        if ("dang_nhap".equals(loai)) {
+            AppUser u = users.findByEmailIgnoreCase(email)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Email chưa đăng ký tài khoản."));
+            fullName = u.getFullName();
+        } else if ("dang_ky".equals(loai)) {
+            if (users.existsByEmailIgnoreCase(email)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Email này đã có tài khoản.");
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Loại xác thực không hợp lệ.");
+        }
+
+        String otp = otpService.taoOtp(email, loai);
+        if (emailService != null) {
+            emailService.guiEmailMaXacNhanOTP(email, fullName, otp, loai);
+        }
+        return new AuthDtos.GuiOtpResponse(true, "Mã xác thực mới đã được gửi tới " + email, otpService.getRemainingCooldownSeconds(email, loai));
     }
 
     @Transactional

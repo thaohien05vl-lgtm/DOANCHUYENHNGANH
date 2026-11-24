@@ -33,6 +33,11 @@ public class ApiExceptionHandler {
         return response(400, message);
     }
 
+    @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNoResource(org.springframework.web.servlet.resource.NoResourceFoundException ex) {
+        return response(404, "Không tìm thấy đường dẫn yêu cầu.");
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleUnexpected(Exception ex) {
         log.error("Lỗi không mong muốn trong quá trình xử lý yêu cầu", ex);

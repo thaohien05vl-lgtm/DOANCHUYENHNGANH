@@ -97,13 +97,14 @@ public class DuLieuService {
 
         List<MucTieuDto> mtList = goals.findAllByUserId(userId).stream()
                 .filter(Objects::nonNull)
-                .map(x -> new MucTieuDto(
-                        x.getId(),
-                        x.getName(),
-                        x.getTargetAmount(),
-                        x.getSavedAmount(),
-                        x.getDueDate() == null ? "" : x.getDueDate().toString(),
-                        x.getColor()))
+                .map(goal -> new MucTieuDto(
+                        goal.getId(),
+                        goal.getName(),
+                        goal.getTargetAmount(),
+                        goal.getSavedAmount(),
+                        goal.getDueDate() == null ? "" : goal.getDueDate().toString(),
+                        goal.getColor(),
+                        goal.getAlertThreshold() != null ? goal.getAlertThreshold() : 80))
                 .toList();
 
         return new DuLieuDto(viList, dmList, gdList, nsList, mtList);
@@ -178,6 +179,7 @@ public class DuLieuService {
             e.setSavedAmount(nonNegative(x.daTietKiem(), "Số tiền đã tiết kiệm không hợp lệ."));
             e.setDueDate(parseDate(x.han(), "Hạn mục tiêu không hợp lệ."));
             e.setColor(color(x.mau()));
+            e.setAlertThreshold(x.nguongCanhBao() != null ? x.nguongCanhBao() : 80);
         }, goals, userId);
 
         // Tạo thông báo giao dịch và kiểm tra cảnh báo ngân sách

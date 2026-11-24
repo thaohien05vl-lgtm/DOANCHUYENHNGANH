@@ -1,6 +1,19 @@
 {
+    "java.jdt.ls.java.home": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.13.9-hotspot",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-21",
+            "path": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.13.9-hotspot",
+            "default": true
+        }
+    ],
+    "java.import.gradle.enabled": false,
+    "java.import.maven.enabled": true,
     "java.compile.nullAnalysis.mode": "disabled",
     "java.configuration.updateBuildConfiguration": "automatic",
+    "java.project.importOnFirstTimeStartup": "automatic",
+    "java.project.importHint": false,
+    "maven.pomPath": "backend/pom.xml",
     "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -Xlog:disable",
     "[css]": {
         "editor.formatOnSave": false,

@@ -20,9 +20,35 @@ public class AuthController {
         return authService.dangKy(request);
     }
 
+    @PostMapping("/gui-otp-dang-ky")
+    public AuthDtos.GuiOtpResponse guiOtpDangKy(@Valid @RequestBody AuthDtos.GuiOtpDangKyRequest request) {
+        return authService.guiOtpDangKy(request);
+    }
+
+    @PostMapping("/xac-nhan-dang-ky")
+    @ResponseStatus(HttpStatus.CREATED)
+    public AuthDtos.AuthResponse xacNhanDangKy(@Valid @RequestBody AuthDtos.XacNhanDangKyRequest request) {
+        return authService.xacNhanDangKy(request);
+    }
+
     @PostMapping("/dang-nhap")
     public AuthDtos.AuthResponse dangNhap(@Valid @RequestBody AuthDtos.DangNhapRequest request) {
         return authService.dangNhap(request);
+    }
+
+    @PostMapping("/gui-otp-dang-nhap")
+    public AuthDtos.DangNhapResponse guiOtpDangNhap(@Valid @RequestBody AuthDtos.DangNhapRequest request) {
+        return authService.guiOtpDangNhap(request);
+    }
+
+    @PostMapping("/xac-nhan-dang-nhap")
+    public AuthDtos.AuthResponse xacNhanDangNhap(@Valid @RequestBody AuthDtos.XacNhanDangNhapRequest request) {
+        return authService.xacNhanDangNhap(request);
+    }
+
+    @PostMapping("/gui-lai-otp")
+    public AuthDtos.GuiOtpResponse guiLaiOtp(@Valid @RequestBody AuthDtos.GuiLaiOtpRequest request) {
+        return authService.guiLaiOtp(request);
     }
 
     @PostMapping("/quen-mat-khau")

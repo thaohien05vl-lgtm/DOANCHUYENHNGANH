@@ -29,6 +29,21 @@ spring:
     multipart:
       max-file-size: 8MB
       max-request-size: 10MB
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
 management:
   endpoints:
@@ -44,6 +59,7 @@ app:
     # Thay bằng chuỗi bí mật riêng, tối thiểu 32 ký tự trong môi trường chạy thật.
     secret: ${JWT_SECRET:Finora-Local-Development-Secret-Key-Change-Before-Deploy-2026}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
   cors:
     # Origin bổ sung, phân cách bằng dấu phẩy (localhost, mạng LAN và Capacitor đã được cho phép sẵn).
     allowed-origin: ${FRONTEND_ORIGIN:http://localhost:5173}

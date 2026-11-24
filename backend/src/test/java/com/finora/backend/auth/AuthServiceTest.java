@@ -1,6 +1,7 @@
 package com.finora.backend.auth;
 
 import com.finora.backend.data.DuLieuService;
+import com.finora.backend.email.EmailService;
 import com.finora.backend.entity.AppUser;
 import com.finora.backend.repository.AppUserRepository;
 import com.finora.backend.security.JwtService;
@@ -21,6 +22,7 @@ class AuthServiceTest {
     private PasswordEncoder passwordEncoder;
     private JwtService jwtService;
     private DuLieuService duLieuService;
+    private EmailService emailService;
     private AuthService authService;
 
     @BeforeEach
@@ -29,7 +31,8 @@ class AuthServiceTest {
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
         jwtService = Mockito.mock(JwtService.class);
         duLieuService = Mockito.mock(DuLieuService.class);
-        authService = new AuthService(users, passwordEncoder, jwtService, duLieuService);
+        emailService = Mockito.mock(EmailService.class);
+        authService = new AuthService(users, passwordEncoder, jwtService, duLieuService, emailService);
     }
 
     @Test
@@ -45,6 +48,7 @@ class AuthServiceTest {
         assertEquals("Nguyễn Văn A", resp.nguoiDung().ten());
         assertEquals("vana@example.com", resp.nguoiDung().email());
         verify(duLieuService, times(1)).taoDuLieuMacDinh(anyString());
+        verify(emailService, times(1)).guiEmailThongBaoDangKy("vana@example.com", "Nguyễn Văn A");
     }
 
     @Test

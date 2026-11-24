@@ -4,6 +4,7 @@ import type { NguoiDung } from '../types'
 export interface XacThucNguCanh {
   nguoiDung: NguoiDung | null
   dangNhap: (email: string, matKhau: string) => Promise<void>
+  xacNhanDangNhap: (email: string, otp: string) => Promise<void>
   dangNhapOAuth: (provider: 'google' | 'facebook', token: string) => Promise<void>
   dangKy: (ten: string, email: string, matKhau: string) => Promise<void>
   capNhatHoSo: (nd: NguoiDung) => Promise<void>

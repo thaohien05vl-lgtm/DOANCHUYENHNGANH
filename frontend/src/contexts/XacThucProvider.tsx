@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { dangNhapApi, dangKyApi, dangNhapOAuthApi } from '../services/xacThucService'
+import { dangNhapApi, dangKyApi, dangNhapOAuthApi, xacNhanDangNhapApi } from '../services/xacThucService'
 import { api } from '../services/api'
 import type { NguoiDung } from '../types'
 import { XacThucContext } from './xacThucContext'
@@ -68,9 +68,12 @@ export function XacThucProvider({ children }: { children: ReactNode }) {
     () => ({
       nguoiDung,
       dangNhap: async (email: string, matKhau: string) => datNguoiDung(await dangNhapApi(email, matKhau)),
+      xacNhanDangNhap: async (email: string, otp: string) => datNguoiDung(await xacNhanDangNhapApi(email, otp)),
       dangNhapOAuth: async (provider: 'google' | 'facebook', token: string) =>
         datNguoiDung(await dangNhapOAuthApi(provider, token)),
-      dangKy: async (ten: string, email: string, matKhau: string) => datNguoiDung(await dangKyApi(ten, email, matKhau)),
+      dangKy: async (ten: string, email: string, matKhau: string) => {
+        await dangKyApi(ten, email, matKhau)
+      },
       capNhatHoSo,
       dangXuat: () => {
         localStorage.removeItem('qlct-token')

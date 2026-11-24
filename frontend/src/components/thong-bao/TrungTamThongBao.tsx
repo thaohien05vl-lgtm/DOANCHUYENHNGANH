@@ -118,6 +118,13 @@ export function TrungTamThongBao({ mo, dong, onCapNhatSoLuong, onChonGiaoDich }:
     }
   }
 
+  // Điều hướng chuyên trang từ thông báo (Mục tiêu, Ngân sách...)
+  const xuLyDieuHuong = (duongDan: string) => {
+    setChiTiet(null)
+    dong()
+    navigate(duongDan)
+  }
+
   // Xử lý đánh dấu tất cả đã đọc
   const xuLyDocTatCa = async () => {
     await danhDauTatCaDaDoc().catch(() => undefined)
@@ -400,6 +407,7 @@ export function TrungTamThongBao({ mo, dong, onCapNhatSoLuong, onChonGiaoDich }:
         item={chiTiet}
         dong={() => setChiTiet(null)}
         onXemGiaoDich={xuLyXemGiaoDich}
+        onDieuHuong={xuLyDieuHuong}
       />
     </>,
     document.body,

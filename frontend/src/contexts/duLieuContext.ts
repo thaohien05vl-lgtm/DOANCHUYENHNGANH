@@ -7,6 +7,7 @@ export type BanGhiMoi<K extends KhoaDuLieu> = Omit<PhanTu<K>, 'id'> & { id?: str
 
 export interface DuLieuNguCanh extends DuLieu {
   luu: <K extends KhoaDuLieu>(khoa: K, muc: BanGhiMoi<K>) => void
+  capNhatCucBo: (bienDoi: (cu: DuLieu) => DuLieu) => void
   /** Trả về thông báo lỗi nếu không xoá được (ví dụ danh mục đang có giao dịch) */
   xoa: (khoa: KhoaDuLieu, id: string) => string | null
   datLaiMau: () => void

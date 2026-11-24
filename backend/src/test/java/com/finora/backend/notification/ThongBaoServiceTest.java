@@ -250,6 +250,44 @@ class ThongBaoServiceTest {
     }
 
     @Test
+    @DisplayName("Kiểm tra cảnh báo mục tiêu đạt ngưỡng 80%")
+    void kiemTraVaTaoCanhBaoMucTieu_DatNguong80() {
+        com.finora.backend.entity.GoalEntity g = new com.finora.backend.entity.GoalEntity();
+        g.setId("g-1");
+        g.setUserId(userId);
+        g.setName("Mua xe máy");
+        g.setTargetAmount(new BigDecimal("20000000"));
+        g.setAlertThreshold(80);
+
+        thongBaoService.kiemTraVaTaoCanhBaoMucTieu(userId, g, new BigDecimal("14000000"), new BigDecimal("16000000"), "Ví chính", "test@gmail.com", "User");
+
+        ArgumentCaptor<NotificationEntity> captor = ArgumentCaptor.forClass(NotificationEntity.class);
+        verify(notificationRepository).save(captor.capture());
+        NotificationEntity saved = captor.getValue();
+        assertEquals("muc_tieu_nguong", saved.getType());
+        assertTrue(saved.getTitle().contains("80%"));
+    }
+
+    @Test
+    @DisplayName("Kiểm tra cảnh báo vượt mục tiêu > 100%")
+    void kiemTraVaTaoCanhBaoMucTieu_VuotMucTieu() {
+        com.finora.backend.entity.GoalEntity g = new com.finora.backend.entity.GoalEntity();
+        g.setId("g-1");
+        g.setUserId(userId);
+        g.setName("Quỹ khẩn cấp");
+        g.setTargetAmount(new BigDecimal("10000000"));
+        g.setAlertThreshold(80);
+
+        thongBaoService.kiemTraVaTaoCanhBaoMucTieu(userId, g, new BigDecimal("9000000"), new BigDecimal("12000000"), "Ví chính", "test@gmail.com", "User");
+
+        ArgumentCaptor<NotificationEntity> captor = ArgumentCaptor.forClass(NotificationEntity.class);
+        verify(notificationRepository).save(captor.capture());
+        NotificationEntity saved = captor.getValue();
+        assertEquals("muc_tieu_vuot", saved.getType());
+        assertTrue(saved.getTitle().contains("Vượt mục tiêu"));
+    }
+
+    @Test
     @DisplayName("Đánh dấu đã đọc thành công đúng user")
     void danhDauDaDoc_ThanhCong() {
         NotificationEntity n = new NotificationEntity();
